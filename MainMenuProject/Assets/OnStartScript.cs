@@ -18,7 +18,7 @@ public class OnStartScript : MonoBehaviour {
 			// do stuff with the user
 			// Skip to matching game
 			Debug.Log(ParseUser.CurrentUser.Email + " is logged in.");
-			Application.LoadLevel("scnMatching"); // load/switch to the scnMatching scene.
+			Application.LoadLevel("scnInitMatching"); // load/switch to the scnMatching scene.
 
 		}
 		else

@@ -101,7 +101,7 @@ public class UserManagerScript : MonoBehaviour
 		}
 		else
 		{
-			Application.LoadLevel("scnMatching");
+			Application.LoadLevel("scnInitMatching");
 		}
 		yield break;
 		Debug.Log ("You'll never see this"); // produces a dead code warning
