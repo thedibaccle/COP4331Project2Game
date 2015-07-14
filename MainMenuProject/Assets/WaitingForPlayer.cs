@@ -37,10 +37,9 @@ public class WaitingForPlayer : MonoBehaviour {
 	private IEnumerator makeTurnThread(int wait)
 	{
 		Debug.Log ("Getting last turn details...(5 second wait)");
-		StartCoroutine(getLastTurn(5)); // make everything wait 5 seconds per
-		yield return new WaitForSeconds (wait+3);
-		if (!myTurn) {
-			this.checkIfMyTurn ();
+		if (!myTurn) 
+		{
+			StartCoroutine (getLastTurn (5)); // make everything wait 5 seconds per
 		} else 
 		{
 			Application.LoadLevel ("scnGame");
@@ -80,7 +79,9 @@ public class WaitingForPlayer : MonoBehaviour {
 		// HOURS AND HOURS AND HOURS OF FRUSTRATION!!!! THIS DOES NOT WORK!
 		// Must order by asc and simply obtain the last row -_-; beyond annoyed at this point
 		query.OrderBy("thisMovePerformedDate");
-
+		bool foundMyGame = false;
+		string myUsername = ParseUser.CurrentUser.Username.ToString ();
+		string finshedString = "Finished";
 		Task runQuery = query.FindAsync().ContinueWith(t =>
 		                                                {
 			// if FirstAsync is used then the sorting is ignored. fml now I have to update god only knows how many other queries :(
@@ -91,14 +92,21 @@ public class WaitingForPlayer : MonoBehaviour {
 				var _thismvperformeddate = _result.Get<int>("thisMovePerformedDate");
 				var _thisusrname = _result.Get<string>("thisPlayerUsername");
 				var _nextusrname = _result.Get<string>("nextPlayerUsername");
-				this.thisMovePerformedDate = _thismvperformeddate;
-				this.thisUsernameFound = _thisusrname;
-				this.nextUsernameFound = _nextusrname;
+				var _inprog = _result.Get<string>("inProgress");
+
+				if(!finshedString.Equals(_inprog) && (myUsername.Equals(_nextusrname) || myUsername.Equals(_thisusrname)))
+				{
+					this.thisUsernameFound = _thisusrname;
+					this.nextUsernameFound = _nextusrname;
+					if(myUsername.Equals(_nextusrname))
+					{
+						this.myTurn = true;
+					}
+					//this.gameMatch = _result;
+					break;
+				}
 
 			} // the last item will be the one we actually care about. I really hate Parse right now, so much. Passionately.
-			Debug.Log("this.thisMovePerformedDate => " + this.thisMovePerformedDate);
-			Debug.Log("this.thisUsernameFound => " + this.thisUsernameFound);
-			Debug.Log("this.nextUsernameFound => " + this.nextUsernameFound);
 		});
 		yield return new WaitForSeconds(wait);
 		runQuery.Wait();
@@ -118,17 +126,9 @@ public class WaitingForPlayer : MonoBehaviour {
 
 			//Debug.Log("Results from query: " + previousTurnOnParse.ToString());
 
-			Debug.Log("ParseUsername => " + ParseUser.CurrentUser.Username.ToString());
-			Debug.Log("thisUsernameFound => " + this.thisUsernameFound);
-			Debug.Log("nextUsernameFound => " + this.nextUsernameFound);
-			if(this.nextUsernameFound.Equals (ParseUser.CurrentUser.Username.ToString()))
-			{
-				myTurn = true;
-			}
-			else
-			{
-				myTurn = false;
-			}
+			Debug.Log("This Game's: ParseUsername => " + ParseUser.CurrentUser.Username.ToString());
+			Debug.Log("This Game's: thisUsernameFound => " + this.thisUsernameFound);
+			Debug.Log("This Game's: nextUsernameFound => " + this.nextUsernameFound);
 
 
 			//Application.LoadLevel("ExampleScene");

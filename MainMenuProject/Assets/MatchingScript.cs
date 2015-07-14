@@ -157,10 +157,12 @@ public class MatchingScript : MonoBehaviour {
 			foreach (var _result in _results)
 			{
 				// This does not require a network access.
-				var _thisusrname = _result.Get<string>("thisPlayerUsername");
 				var _nextusrname = _result.Get<string>("nextPlayerUsername");
-				this.thisUsernameFound = _thisusrname;
 				this.nextUsernameFound = _nextusrname;
+				if(this.nextUsernameFound==null)
+				{
+					this.gameObjID = _result.ObjectId.ToString();
+				}
 			} // the last item will be the one we actually care about. I really hate Parse right now, so much. Passionately.
 		});
 		yield return new WaitForSeconds(wait);
@@ -178,14 +180,6 @@ public class MatchingScript : MonoBehaviour {
 		else
 		{
 
-			if(!this.nextUsernameFound.Equals (ParseUser.CurrentUser.Username))
-			{
-				this.gameObjID = playerGame.ObjectId.ToString();
-			}
-			else
-			{
-				this.gameObjID = null;
-			}
 
 			Debug.Log("Sucess: Results from query: " + this.gameObjID);
 			//Application.LoadLevel("ExampleScene");
@@ -282,6 +276,9 @@ public class MatchingScript : MonoBehaviour {
 
 		ParseQuery<ParseObject> query = ParseObject.GetQuery(gameObjName);
 		query.OrderBy("thisMovePerformedDate");
+		string myUsername = ParseUser.CurrentUser.Username.ToString ();
+		string finshedString = "Finished";
+		int whichOptionFlag = -1;
 		Task runQuery = query.FindAsync().ContinueWith(t =>
 	     	{
 			// if FirstAsync is used then the sorting is ignored. fml now I have to update god only knows how many other queries :(
@@ -292,9 +289,16 @@ public class MatchingScript : MonoBehaviour {
 				var _thisusrname = _result.Get<string>("thisPlayerUsername");
 				var _nextusrname = _result.Get<string>("nextPlayerUsername");
 				var _inprog = _result.Get<string>("inProgress");
-				this.inProgress = _inprog;
-				this.thisUsernameFound = _thisusrname;
-				this.nextUsernameFound = _nextusrname;
+				if(!finshedString.Equals(_inprog) && myUsername.Equals(_thisusrname))
+				{
+					whichOptionFlag=1;
+					break;
+				}
+				else if(!finshedString.Equals(_inprog) && myUsername.Equals(_nextusrname))
+				{
+					whichOptionFlag=2;
+					break;
+				}
 				//break;
 			} // the last item will be the one we actually care about. I really hate Parse right now, so much. Passionately.
 		});
@@ -315,26 +319,23 @@ public class MatchingScript : MonoBehaviour {
 		else
 		{
 			//this.gameObjID = playerGame.ObjectId.ToString();
-			if(this.inProgress.Equals ("Finished"))
+
+			if(whichOptionFlag==1)
 			{
-				this.gameObjID = null; // game is over
+				Debug.LogWarning("Moving 1");
+				//Debug.LogWarning("this.thisUsernameFound=>" + this.thisUsernameFound + " parseUser=>" + myUsername);
+				Application.LoadLevel("scnWaiting");
+			}
+			else if(whichOptionFlag==2)
+			{
+				Debug.LogWarning("Moving 2");
+				//Debug.LogWarning("this.thisUsernameFound=>" + this.nextUsernameFound + " parseUser=>" + myUsername);
+				Application.LoadLevel("scnGame");
 			}
 			else
 			{
-				if(this.thisUsernameFound !=null && this.thisUsernameFound.Equals (ParseUser.CurrentUser.Username.ToString ()))
-				{
-					Debug.LogWarning("Moving 1");
-					Debug.LogWarning("this.thisUsernameFound=>" + this.thisUsernameFound + " parseUser=>" + ParseUser.CurrentUser.Username.ToString ());
-					Application.LoadLevel("scnWaiting");
-				}
-				else
-				{
-					Debug.LogWarning("Moving 2");
-					Application.LoadLevel("scnGame");
-				}
+				this.gameObjID = null; // game is over or no games exist for this user that they're in
 			}
-			
-
 
 			Debug.Log("Results from query: " + this.gameObjID);
 			//Application.LoadLevel("ExampleScene");

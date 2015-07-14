@@ -40,12 +40,12 @@ public class TurnActions : MonoBehaviour {
 	{
 		Debug.Log ("Getting last turn details...(5 second wait)");
 		DisplayError ("Looking up last turn details...", false);
-		StartCoroutine (getLastTurn (wait));
+		StartCoroutine (makeTheDamnTurn (wait));
 		yield return new WaitForSeconds (wait);
 
-		DisplayError ("Creating new move...", false);
-		StartCoroutine (makeNewTurn (wait));
-		yield return new WaitForSeconds (wait);
+		//DisplayError ("Creating new move...", false);
+		//StartCoroutine (makeNewTurn (wait));
+		//yield return new WaitForSeconds (wait);
 
 		DisplayError ("Going to waiting screen...", false);
 		Application.LoadLevel ("scnWaiting");
@@ -54,7 +54,7 @@ public class TurnActions : MonoBehaviour {
 		// ====================================
 	}
 
-	private IEnumerator getLastTurn(int wait)
+	private IEnumerator makeTheDamnTurn(int wait)
 	{
 		
 		
@@ -81,6 +81,8 @@ public class TurnActions : MonoBehaviour {
 		var query = ParseObject.GetQuery(gameObjName);
 		//query.OrderByDescending("updatedAt");
 		query.OrderBy("thisMovePerformedDate");
+		bool foundMyGame = false;
+		string myUsername = ParseUser.CurrentUser.Username.ToString ();
 		Task runQuery = query.FindAsync().ContinueWith(t =>
 		                                                {
 			// if FirstAsync is used then the sorting is ignored. fml now I have to update god only knows how many other queries :(
@@ -89,15 +91,24 @@ public class TurnActions : MonoBehaviour {
 			{
 				// This does not require a network access.
 				var _matchCreationDate = _result.Get<int>("matchCreationDate");
-				var _thismvperformeddate = _result.Get<int>("thisMovePerformedDate");
+				//var _thismvperformeddate = _result.Get<int>("thisMovePerformedDate");
 				var _thisusrname = _result.Get<string>("thisPlayerUsername");
 				var _nextusrname = _result.Get<string>("nextPlayerUsername");
-				var _turnNumber = _result.Get<int>("thisTurnNumber");
+				//var _turnNumber = _result.Get<int>("thisTurnNumber");
 				this.matchCreationDate = _matchCreationDate;
-				this.thisMovePerformedDate = _thismvperformeddate;
+				//this.thisMovePerformedDate = _thismvperformeddate;
 				this.thisUsernameFound = _thisusrname;
 				this.nextUsernameFound = _nextusrname;
-				this.thisTurnNumber = _turnNumber;
+				//this.thisTurnNumber = _turnNumber;
+				if(myUsername.Equals(this.thisUsernameFound) || myUsername.Equals(this.nextUsernameFound))
+				{
+					foundMyGame=true;
+					this.gameMatch = _result;
+				}
+				else if(!foundMyGame && this.nextUsernameFound == null) // haven't found a game, but here's one who needs a friend
+				{
+					this.gameMatch = _result;
+				}
 				
 			} // the last item will be the one we actually care about. I really hate Parse right now, so much. Passionately.
 			Debug.Log("this.thisMovePerformedDate => " + this.thisMovePerformedDate);
@@ -119,6 +130,21 @@ public class TurnActions : MonoBehaviour {
 		else
 		{
 			Debug.Log("Query Sucessful.");
+			string otherPlayer = this.gameMatch.Get<string>("thisPlayerUsername");
+
+			gameMatch.SaveAsync().ContinueWith(t =>
+			                                   {
+				// Now let's update it with some new data.  In this case, only cheatMode
+				// and score will get sent to the cloud.  playerName hasn't changed.
+				gameMatch["thisPlayerUsername"] = myUsername;
+				gameMatch["nextPlayerUsername"] = otherPlayer;
+				gameMatch["inProgress"] = "InProgress";
+				gameMatch["thisBoardState"] = 888;
+				gameMatch.Increment("thisTurnNumber");
+				gameMatch.SaveAsync();
+			});
+			yield return new WaitForSeconds(wait);
+
 
 			//Application.LoadLevel("ExampleScene");
 		}
