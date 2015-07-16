@@ -34,6 +34,8 @@ public class Manager : MonoBehaviour {
 	
 	}
 
+
+
 	bool CanGo(){
 		return false;
 	}

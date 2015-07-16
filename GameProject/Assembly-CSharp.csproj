@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\AdjTile.cs" />
+     <Compile Include="Assets\AnythingIWant.cs" />
      <Compile Include="Assets\Board.cs" />
      <Compile Include="Assets\LegalMoves.cs" />
      <Compile Include="Assets\Manager.cs" />

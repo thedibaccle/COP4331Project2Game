@@ -9,10 +9,12 @@ public class AdjTile : MonoBehaviour
 	public GameObject objTile;
 	//Put this in board or warp?
 	public Vector2[,] aTilePositions = new Vector2[8,8];
+	public float row, col;
 	//This class needs to tell
 	// Use this for initialization
 	void Start () {
 		pos = transform.position;
+		getPositionInBoardData ();
 		//for (int i = 0; i < nAdjTiles; i++)
 		//	aTilePositions [i] = GameObject.FindGameObjectWithTag ("at" + i).transform.position;
 	}
@@ -21,6 +23,16 @@ public class AdjTile : MonoBehaviour
 	void Update ()
 	{
 
+	}
+
+	public void anPossibleMove () {
+		//Make the tile spin if it is a possible move
+	}
+
+	public void getPositionInBoardData () {
+		row = pos.x/2;
+		col = -pos.y/2;	
+		
 	}
 
 	void OnCollisionEnter (Collision c)

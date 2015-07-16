@@ -33,6 +33,18 @@ public class Warp : MonoBehaviour {
 
 	}
 
+	public void anPossibleMove () {
+	}
+
+	public int GetAltRow(int row) {
+		return 7 - row;
+	}
+
+	public int GetAltCol(int col) {
+		return 7 - col;
+	}
+
+
 	void OnCollisionEnter (Collision collision){
 		//Update LegalMoves list
 		isOccupied = true;
