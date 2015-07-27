@@ -4,7 +4,7 @@ using System.Collections;
 public class move : MonoBehaviour {
 
 	Vector3 pos;                                // For movement
-	float speed = 18.0f;                         // Speed of movement
+	float speed = 12.0f;                         // Speed of movement
 	
 	void Start () {
 		pos = transform.position;          // Take the initial position

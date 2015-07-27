@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{263F3B90-9324-CF1E-2EC9-3C78F9BDD403}</ProjectGuid>
+	<ProjectGuid>{83BE2866-0A53-71D6-C680-423D67BBAD46}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -55,6 +55,7 @@
      <Compile Include="Assets\Piece.cs" />
      <Compile Include="Assets\Warp.cs" />
      <Compile Include="Assets\move.cs" />
+     <Compile Include="Assets\movetesting.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

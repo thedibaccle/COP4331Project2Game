@@ -16,7 +16,7 @@ public class Moves : MonoBehaviour {
 
 	}
 
-	private static bool firstMoveMade = false;
+	//	private static bool firstMoveMade = false;
 
 	/*
 	bool IsOnlyWarp (Warp warp) {
