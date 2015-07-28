@@ -1,58 +1,97 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 
-[RequireComponent(typeof(BoxCollider))]
-public class Piece : MonoBehaviour {
-	GameObject[,] boardData;
-	public Board board;
-	Vector2 pos;
-	public float row, col;
-	Moves objMoves;
-	public string name;
 
+[RequireComponent(typeof(BoxCollider))]
+public class Piece: MonoBehaviour {
+	public static Vector3 selectedPiece;
+	public GameObject capturedPiece = null;
+	public static GameObject piece; 
+	//GameObject[,] boardData;
+	public Board board;
+	public Vector3 pos;
+	public float row, col;
+	//Moves objMoves;
+	public List<Vector3> moves = null;
+	public LegalMoves legalMoves = new LegalMoves();
+	public static bool isOnWarp, isOnTile;
+	//public static bool playerMadeMove;
+	//public string name;
+	public static bool tapped;
+	
 	// Use this for initialization
 	void Start () {
-		//pos = transform.position;
+		pos = transform.position;
+		getPositionInBoardData ();
 		//boardData = board.boardData;
+		//selectedPiece = transform.position;
 		getName (name);
+		piece = this.gameObject;
+		this.gameObject.AddComponent<Rigidbody> ();
+		this.gameObject.GetComponent<Rigidbody> ().useGravity = false;
+		//Board.pieceData [(int)row, (int)col] = this.gameObject;
+		Board.dicboardData.Add (pos, this.gameObject);
+		//Board.boardData [(int)row, (int)col] = this.gameObject;
+		isOnWarp = false;
+		isOnTile = true;
 	}
 	
 	public void getName(string s) {
 		name = s;
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
-		pos = transform.position;
+		//transform.position = selectedPiece;
+		//pos = transform.position;
 		getPositionInBoardData ();
+		//piece = this.gameObject;
 	}
-	public bool tapped;
-
-	void OnMouseDown () {
+	
+	
+	public void OnMouseDown () {
 		//Board.ShowLegalMoves ();
 		//Use this to make ALL OF THE INSTANTS OF tapped
 		tapped = true;
-
-		Debug.Log ("down");
 	}
 	
-	void OnMouseUp () {
-		tapped = false;
-		//objMoves = new Moves ();
-		//base.PrintBoardData ();
-		Debug.Log ("up");
+	public void OnMouseUp () {
+		piece = this.gameObject;
+		if (piece.tag == Board.currPlayer) {
+			Debug.Log ("Selecting: " + gameObject.tag + "where row: " + pos.x + " and col: " + pos.y);
+			moves = new LegalMoves ().getLegalMoves (piece);
+		
+			/*TODO: Check if first click
+		 *Is this the second click
+		 *Is it selected twice
+		 *Is this different piece
+		 *If different, is move legal?
+		 *if move legal, move first piece to second position
+		 * 
+		 */
+		
+			if (selectedPiece != null) {
+				selectedPiece = transform.position;
+			
+				Debug.Log (selectedPiece);
+				Debug.Log ("Is this piece on a tile..." + isOnTile);
+				Debug.Log ("Is this piece on a warp..." + isOnWarp);
+			}
+		} else
+			Debug.Log ("Not this player's turn!");
 	}
-
+		
 	public void getPositionInBoardData () {
 		row = pos.x/2;
 		col = -pos.y/2;	
 		
 	}
-
+	
 	public void anCurrPlayerBob () {
 	}
-
+	
 	public void anSelected () {
 	}
-
+	
 }

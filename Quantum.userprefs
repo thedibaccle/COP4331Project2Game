@@ -1,0 +1,20 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Board.cs">
+    <Files>
+      <File FileName="Assets\Piece.cs" Line="11" Column="16" />
+      <File FileName="Assets\Warp.cs" Line="1" Column="1" />
+      <File FileName="Assets\Moves.cs" Line="19" Column="23" />
+      <File FileName="Assets\Manager.cs" Line="1" Column="1" />
+      <File FileName="Assets\LegalMoves.cs" Line="26" Column="23" />
+      <File FileName="Assets\move.cs" Line="1" Column="1" />
+      <File FileName="Assets\AdjTile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Board.cs" Line="274" Column="5" />
+      <File FileName="Assets\AnythingIWant.cs" Line="4" Column="8" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
