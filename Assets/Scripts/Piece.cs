@@ -9,20 +9,22 @@ public class Piece: MonoBehaviour {
 	public GameObject capturedPiece = null;
 	public static GameObject piece; 
 	//GameObject[,] boardData;
-	public Board board;
+	//public Board board;
 	public Vector3 pos;
 	public float row, col;
-	Moves objMoves;
+	//Moves objMoves;
 	public List<Vector3> moves;
 	public LegalMoves legalMoves = new LegalMoves();
-	public static bool isOnWarp, isOnTile;
+	//public static bool isOnWarp, isOnTile;
 	//public static bool playerMadeMove;
 	//public string name;
 	public static bool tapped;
+	public bool isSplit = false;
 	public static int pieceCounter = 0;
 	// Use this for initialization
 	void Start () {
 		pos = transform.position;
+		pos.y = (float)((int)pos.y);
 		getPositionInBoardData ();
 		//boardData = board.boardData;
 		//selectedPiece = transform.position;
@@ -40,8 +42,8 @@ public class Piece: MonoBehaviour {
 		Board.gameBoardState[(int)row, (int)col] = this.name;
 		//Board.peicePlacement += this.name + "@" + (-this.pos.y/2) + "x" + this.pos.x/2;
 		//Board.boardData [(int)row, (int)col] = this.gameObject;
-		isOnWarp = false;
-		isOnTile = true;
+		//isOnWarp = false;
+		//isOnTile = true;
 	}
 	
 	public void getName(string s) {
@@ -70,7 +72,9 @@ public class Piece: MonoBehaviour {
 		//base.PrintBoardData ();
 		piece = this.gameObject;
 		Debug.Log ("Selecting: " + gameObject.tag + "where row: " + pos.y + " and col: " + pos.x);
-		moves  = new LegalMoves().getLegalMoves (piece);
+
+		//if(moves.Count == 0)
+			moves  = new LegalMoves().getLegalMoves (piece);
 
 		/*TODO: Check if first click
 		 *Is this the second click
@@ -81,13 +85,11 @@ public class Piece: MonoBehaviour {
 		 * 
 		 */
 
-		if (selectedPiece != null ) {
+		//if (selectedPiece != null ) {
 			selectedPiece = transform.position;
 
 			Debug.Log (selectedPiece);
-			Debug.Log ("Is this piece on a tile..." + isOnTile);
-			Debug.Log ("Is this piece on a warp..." + isOnWarp);
-		}
+	
 
 	}
 	
@@ -100,20 +102,25 @@ public class Piece: MonoBehaviour {
 
 	void OnCollisionEnter (Collision c) {
 		//Debug.Log ("Colliding with: " + c.collider.gameObject.name);
-		if (c.gameObject.name == "Tile") {
-			Debug.Log ("Piece hitting tile");
+		//if (c.gameObject.name == "Tile") {
+		//	Debug.Log ("Piece hitting tile");
 			//c.gameObject.GetComponent<AdjTile> ().collidingWith = this.gameObject;
 			//Destroy (c.gameObject);
-		}
+
 	}
 
 	void OnCollisionExit (Collision c) {
 	}
 
 	public void anCurrPlayerBob () {
+
 	}
 
 	public void anSelected () {
+	}
+
+	void anMove (Vector3 to){
+		
 	}
 
 

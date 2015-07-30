@@ -11,7 +11,7 @@ using System.Collections.Generic; // need this STUPID THING so IENumerable works
 public class Board : MonoBehaviour {
 	//public AdjTile adjTile;
 	public static GameObject[,] boardData = new GameObject[8, 8];
-	public static GameObject[] pieceData = new GameObject[16];
+	public static GameObject[] pieceData = new GameObject[32];
 	public static bool[, ] isPieceThere;
 	public static GameObject capturedPiece = null;
 	public static Dictionary<Vector3, GameObject> dicboardData = new Dictionary<Vector3, GameObject>();
@@ -21,10 +21,10 @@ public class Board : MonoBehaviour {
 	public static bool playerMadeMove;
 	//public int WhosTurnIsIt = 0;
 	//Maximum number of pieces on board is 32
-	public Moves[] moves;
+	//public Moves[] moves;
 	public LegalMoves legalMoves = new LegalMoves();
 	//float setAtRow = -1.0F, setAtCol;
-
+	public static bool isInitialized = false;
 	public static string[,] gameBoardState = getNullBoard ();
 	public static bool isPlayerWaiting = true;
 
@@ -44,8 +44,7 @@ public class Board : MonoBehaviour {
 			// This will make the move, and afterwards move to the scnWaiting or perform the script code from that scene
 			// the waiting scene/code whichever, will end up being what sets isPlayerWaiting to false once it is this player's turn again.
 			Debug.LogWarning ("!!! GOING INTO NEW AREA");
-			var test = new TurnActions ();
-			test.makeTurn ();
+			//Application.LoadLevel ("scnTakeTurn");
 		} else
 		{
 
@@ -129,13 +128,6 @@ public class Board : MonoBehaviour {
 
 	void Update ()
 	{
-		/*TODO: MAKE SURE THAT THE ANIMATIONS ARE ONLY FOR THE PIECES SELECTED
-		 * 	HAVE A COPY OF THE ORIGINAL boardData, SO WHEN THE PIECES MOVE, THE TILES UNDERNEATH
-		 *  WILL HAVE THEIR COORDS RESTORED
-		 * 
-		 */
-
-
 		// SINGLE PLAYER MODE (USE THIS)
 		//if (playerMadeMove) {
 		//	currPlayer = WhosTurnIsItNow (count);
@@ -171,11 +163,14 @@ public class Board : MonoBehaviour {
 		//Debug.Log ("MOVE DBUG: " + from.GetComponent<Piece> ().pos);
 		//boardData.Remove (from.GetComponent<Piece> ().pos);
 		Debug.Log ("IN MOVE.... HOW MANY AVAILABLE MOVES DO WE HAVE...." + from.GetComponent<Piece> ().moves.Count);
-		Debug.Log ("What are each of the available moves?");
+		//Debug.Log ("What are each of the available moves?");
 
+		Debug.Log ("to: " + to);
+		Debug.Log ("Location player wants to go: " + to + " ... but can it go? " + from.GetComponent<Piece> ().moves.Contains (to));
+	
+		//for (int i = 0; i < from.GetComponent<Piece> ().moves.Count; i++)
+		//	Debug.Log ("Move #" + i + from.GetComponent<Piece> ().moves[i].z	.Equals(to.z));
 
-		Debug.Log ("Location player wants to go: " + to );
-		Debug.Log ("Does moves contain to?..." + from.GetComponent<Piece> ().moves.Contains (to));
 		if (from.GetComponent<Piece> ().moves.Contains(to)) 
 		{
 			capturedPiece = from.GetComponent<Piece> ().capturedPiece;
@@ -196,6 +191,9 @@ public class Board : MonoBehaviour {
 					//if(LegalMoves.jumpList != null)
 					if(LegalMoves.jumpList.Contains(to)) {
 						//GameObject.Destroy(capturedPiece);
+						capturedPiece.GetComponent<Piece> ().pos = new Vector3(7, -7, -100);
+						capturedPiece.GetComponent<Piece> ().transform.position = capturedPiece.GetComponent<Piece> ().pos;
+
 						Debug.Log ("Destroyed " + capturedPiece.tag + " at pos: " + capturedPiece.GetComponent<Piece> ().pos);
 					}
 					to.z = -0.5F;
@@ -214,6 +212,7 @@ public class Board : MonoBehaviour {
 			//This is just for moves that don't involve capturing a piece
 			else
 			{
+				to.z = -0.5f;
 				from.transform.position = to;
 
 				from.GetComponent<Piece> ().pos = to;
@@ -224,6 +223,47 @@ public class Board : MonoBehaviour {
 				capturedPiece = null;
 
 			}
+
+			//If player reaches other side of board and isn't already split, then split!
+		
+			//Make 
+			float r = (float)(UnityEngine.Random.Range(2, 12)/2);
+			float random = (float)Math.Ceiling(r) * 2;
+			int saveMe = 0;
+			//Debug.Log ("This works " + boardData[(int)random/2 , 7] + " " + (from.GetComponent<Piece> ().));
+			//For White pieces
+			if(from.GetComponent<Piece> ().pos.y == 0 && from.tag == "PlayerOne" && !from.GetComponent<Piece> ().isSplit) {
+				//If tile is taken, then randomize again
+				while(boardData[(int)random/2 , 7].GetComponent<AdjTile> ().isOccupied && saveMe < 20160) {
+					//Debug.Log ("Lol occupied");
+					r = (UnityEngine.Random.Range(2, 12)/2);
+					random = (float)Math.Ceiling(r);
+					saveMe++;
+				}
+				if(saveMe == 20160){}
+				//Make piece and tell the board that they have been split
+				else {
+					GameObject split = (GameObject)Instantiate(from, new Vector3(random, -14, -0.5f), Quaternion.identity);
+					from.GetComponent<Piece> ().isSplit = true;
+					split.GetComponent<Piece> ().isSplit = true;
+				}
+			}
+			//For Black pieces
+			else if(from.GetComponent<Piece> ().row == 7 && from.tag == "PlayerTwo"){
+				while(boardData[(int)random/2 , 0].GetComponent<AdjTile> ().isOccupied && saveMe < 20160) {
+					//Debug.Log ("Lol occupied");
+					r = (UnityEngine.Random.Range(2, 12)/2);
+					random = (float)Math.Ceiling(r);
+					saveMe++;
+				}
+				if(saveMe == 20160){}
+				else {
+					GameObject split = (GameObject)Instantiate(from, new Vector3(random, 0, -0.5f), Quaternion.identity);
+					from.GetComponent<Piece> ().isSplit = true;
+					split.GetComponent<Piece> ().isSplit = true;
+				}
+			}
+
 			/*
 			if(to.y == 0 && from.GetComponent<Piece> ().tag == "PlayerOne")
 				Instantiate(from , new Vector3 (Random.Range(1, 13), -14, -0.5f), Quaternion.identity);
@@ -238,20 +278,12 @@ public class Board : MonoBehaviour {
 		{
 			Debug.Log ("THIS IS NOT AN AVAILABLE FUCKING MOVE YOU STUPID PIECE OF SHIT");
 		}
-		//boardData.Add (to, from);
-		//from.transform.position = Vector3.MoveTowards(from.GetComponent<Piece> ().pos , to , Time.deltaTime * 10);
-		/*
-		for(int i = 0; i < 8; i++)
-			for(int j = 0; j < 8; j++)
-				//Debug.Log ( "BOARD DATA: " + boardData[i, j]);
-		*/
-
 
 		if (playerMadeMove) 
 		{
 			isPlayerWaiting = true;
 			turnCounter++; // this alone can track the player turns in offline mode since it's being mod returned on method call of WhoIsThis()
-			//playerMadeMove = false;
+			playerMadeMove = false;
 			//var turnActionsScript = new TurnActions();
 			//turnActionsScript.makeTurn();
 			//Debug.LogWarning(dicboardData.ToString());

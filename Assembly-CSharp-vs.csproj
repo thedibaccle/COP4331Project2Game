@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{7285A78A-325A-7071-3A9D-9A6FF49CB106}</ProjectGuid>
+	<ProjectGuid>{2AD45372-2255-E840-97FA-2232D07E5183}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -52,16 +52,12 @@
      <Compile Include="Assets\Scripts\LegalMoves.cs" />
      <Compile Include="Assets\Scripts\Manager.cs" />
      <Compile Include="Assets\Scripts\MatchingScript.cs" />
-     <Compile Include="Assets\Scripts\Moves.cs" />
      <Compile Include="Assets\Scripts\OnStartScript.cs" />
      <Compile Include="Assets\Scripts\Piece.cs" />
-     <Compile Include="Assets\Scripts\Test.cs" />
      <Compile Include="Assets\Scripts\TurnActions.cs" />
      <Compile Include="Assets\Scripts\UserManagerScript.cs" />
      <Compile Include="Assets\Scripts\WaitingForPlayer.cs" />
      <Compile Include="Assets\Scripts\Warp.cs" />
-     <Compile Include="Assets\Scripts\move.cs" />
-     <Compile Include="Assets\Scripts\movetesting.cs" />
      <None Include="Assets\link.xml" />
      <None Include="Assets\Parse\Parse.Unity.xml" />
      <None Include="Assets\Parse\third_party_licenses.txt" />
@@ -75,7 +71,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>C:/Users/Richard/Documents/Unity/COP4331Project2Game-alpha/Assets/Parse/Parse.Unity.dll</HintPath>
+ <HintPath>C:/Users/Richard/Documents/Unity/COP4331Project2Game-alpha2/Assets/Parse/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

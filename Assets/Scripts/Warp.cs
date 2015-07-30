@@ -10,10 +10,10 @@ public class Warp : MonoBehaviour {
 	 */
 	// Use this for initialization
 	//public Dictionary<Vector2, AdjTile> tiles = new Dictionary<Vector2, AdjTile>();
-	public Vector2 pos;
+	public Vector3 pos;
 	public float row, col;
-	Piece piece;
-	public static GameObject warp;
+	//Piece piece;
+	//public static GameObject warp;
 	public GameObject linkedWarp;
 	public GameObject collidingWith = null;
 
@@ -22,9 +22,10 @@ public class Warp : MonoBehaviour {
 	void Start ()
 	{
 		pos = transform.position;
+		pos.z = 0;
 		row = pos.x / 2;
 		col = -pos.y / 2;
-		warp = this.gameObject;
+		//warp = this.gameObject;
 		Board.dicboardData.Add (pos, this.gameObject);
 		Board.boardData [(int)row, (int)col] = this.gameObject;
 		//Board.cacheBoardData [(int)row, (int)col] = this.gameObject;
@@ -43,14 +44,6 @@ public class Warp : MonoBehaviour {
 	}
 
 	public void anPossibleMove () {
-	}
-
-	public static float GetAltRow(int row) {
-		return 7 - row;
-	}
-
-	public static float GetAltCol(int col) {
-		return - (7 - col);
 	}
 
 	void OnMouseUp () {
@@ -81,7 +74,7 @@ public class Warp : MonoBehaviour {
 		if (c.gameObject.tag == "PlayerOne" || c.gameObject.tag == "PlayerTwo") {
 			collidingWith = c.gameObject;
 			isOccupied = true;
-			Debug.Log ("Warp is colliding!");
+			Debug.Log ("Warp is colliding at " + pos);
 			//Piece.isOnWarp = true;
 		}
 	}

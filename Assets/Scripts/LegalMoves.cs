@@ -6,9 +6,9 @@ public class LegalMoves {
 
 	public GameObject capturedPiece = null;
 	int fromRow, fromCol, toRow, toCol;
-	GameObject possibleWarp, adjSpace, jumpSpace;
+	GameObject possibleWarp = null, adjSpace = null, jumpSpace = null;
 	float onlyWarpRow, onlyWarpCol;
-	bool isEnemy = false;
+	//bool isEnemy = false;
 	//public static bool isJump = false;
 	public static List<Vector3> jumpList = new List<Vector3>();
 	//AdjTile tile;
@@ -22,16 +22,13 @@ public class LegalMoves {
 	}
 	*/
 	public List<Vector3> getLegalMoves (GameObject selectedPiece){
-		/*LegalMoves is called by Tile when it's clicked.
-		 * Tile is the destination of the selected piece
-		 * LegalMoves checks all of the possibilities how the piece can
-		 * legally make that move
+		/*LegalMoves is called when Piece is clicked.
+		 * It makes a list of all of the possibile moves that selectedPiece can make
 		 * ----------------
 		 * should legal moves check for each tile dynamically or just have a list of Vector3's 
 		 * that the given piece is allowed to move?.... definitely the latter
 		 */
 		List<Vector3> moves = new List<Vector3>();
-		//Debug.Log ("Wait is this even called?");
 		int row = (int)selectedPiece.GetComponent<Piece> ().pos.x;
 		int col = (int)selectedPiece.GetComponent<Piece> ().pos.y;
 
@@ -53,7 +50,7 @@ public class LegalMoves {
 				//Debug.Log ("boardData pos: " + (row /2 + i) + " " + ( -col / 2 - j));
 				Debug.Log ("a pos: " + (row + i*2) + " " + (col + j*2));
 				if(adjSpace.tag == "Tile")
-				Debug.Log ("Now that we know the position, is it colliding with anything? " + adjSpace.GetComponent<AdjTile> ().collidingWith);
+					Debug.Log ("Now that we know the position, is it colliding with anything? " + adjSpace.GetComponent<AdjTile> ().collidingWith);
 				if(adjSpace.tag == "Warp")
 					Debug.Log ("Now that we know the position, is it colliding with anything? " + adjSpace.GetComponent<Warp> ().collidingWith);
 					//Debug.Log ("What is space!?    tag: " + space.tag + " pos: " + (row + i*2) + " " + (col + j*2));
@@ -66,10 +63,15 @@ public class LegalMoves {
 						jumpSpace = Board.boardData [row / 2 + i * 2, (-col / 2) - j * 2];
 						Debug.Log ("This jumpSpace is a " + jumpSpace);
 						if (CanJump ()) {
-						selectedPiece.GetComponent<Piece> ().capturedPiece = capturedPiece;
-						//isJump = true;
+							selectedPiece.GetComponent<Piece> ().capturedPiece = capturedPiece;
 							jumpList.Add (new Vector3 (row + i * 4, col + j * 4, 0));
 							moves.Add (new Vector3 (row + i * 4, col + j * 4, 0));
+						}
+
+						if(CanJumpThenWarp()) {
+							selectedPiece.GetComponent<Piece> ().capturedPiece = capturedPiece;
+							jumpList.Add (new Vector3 (getAltRow(row + i * 4), getAltCol(col + j * 4), 0));
+							moves.Add (new Vector3 (getAltRow(row + i * 4), getAltCol(col + j * 4), 0));
 						}
 
 					}
@@ -130,14 +132,14 @@ public class LegalMoves {
 	bool EnemyInSpace (GameObject space) {
 
 		Debug.Log ("In EnemyInSpace...current player: " + Board.WhoIsThis());
-		if (space.tag == "Tile" && space.GetComponent<AdjTile> ().collidingWith.Equals(Board.WhoIsThis())) {
-			Debug.Log ("Is it really an enemy tho? " + !space.GetComponent<AdjTile> ().collidingWith.Equals(Board.WhoIsThis()));
-			Debug.Log ("THIS IS DA ENEMY " + space.GetComponent<AdjTile> ().collidingWith.tag);
-			Debug.Log ("Enemy in space!!!1 " + space.GetComponent<AdjTile> ().pos );
+		if (space.tag == "Tile" && !space.GetComponent<AdjTile> ().collidingWith.tag.Equals(Board.WhoIsThis())) {
+			//Debug.Log ("Is it really an enemy tho? " + !space.GetComponent<AdjTile> ().collidingWith.Equals(Board.WhoIsThis()));
+			Debug.Log ("THIS IS DA ENEMY (tile) " + space.GetComponent<AdjTile> ().collidingWith.tag + " and in space " + space.GetComponent<AdjTile> ().pos);
+			//Debug.Log ("Enemy in space!!!1 " + space.GetComponent<AdjTile> ().pos );
 			return true;
-		} else if (space.tag == "Warp" && !space.GetComponent<Warp> ().collidingWith.Equals(Board.WhoIsThis())) {
-			Debug.Log ("THIS IS DA ENEMY " + space.GetComponent<Warp> ().collidingWith.tag);
-			Debug.Log ("Enemy in space!!!1 " + space.GetComponent<Warp> ().pos );
+		} else if (space.tag == "Warp" && !space.GetComponent<Warp> ().collidingWith.tag.Equals(Board.WhoIsThis())) {
+			Debug.Log ("THIS IS DA ENEMY (warp) " + space.GetComponent<Warp> ().collidingWith.tag + " and in space " + space.GetComponent<Warp> ().pos);
+			//Debug.Log ("Enemy in space!!!1 " + space.GetComponent<Warp> ().pos );
 			return true;
 		}
 		//Debug.Log ("Player In Adjacent space: " + space. + "Yep.");
@@ -170,9 +172,9 @@ public class LegalMoves {
 		if (!IsTileEmpty (adjSpace) && EnemyInSpace(adjSpace) && IsTileEmpty (jumpSpace)) {
 			Debug.Log ("In CanJump with: " + Board.WhoIsThis());
 			if(adjSpace.tag == "Tile")
-				//capturedPiece = adjSpace.GetComponent<AdjTile> ().collidingWith;
-				//else
-				//capturedPiece = adjSpace.GetComponent<Warp> ().collidingWith;
+				capturedPiece = adjSpace.GetComponent<AdjTile> ().collidingWith;
+				else
+				capturedPiece = adjSpace.GetComponent<Warp> ().collidingWith;
 			return true;
 		}
 
@@ -183,7 +185,7 @@ public class LegalMoves {
 		if (possibleWarp.tag != "Warp")
 			return false;		
 		//Debug.Log ("In OnlyWarp");
-		Debug.Log ("What the hell is this and is it true or false? " + possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().isOccupied); 
+		//Debug.Log ("What the hell is this and is it true or false? " + possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().isOccupied); 
 		if (!possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().isOccupied) {
 			onlyWarpRow = possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().row;
 			onlyWarpCol = possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().col;
@@ -221,7 +223,7 @@ public class LegalMoves {
 			else
 				Debug.Log ("JumpSpace(warp) is: " + jumpSpace.GetComponent<Warp> ().row + " " + jumpSpace.GetComponent<Warp> ().col);
 
-			//capturedPiece = possibleWarp.GetComponent<Warp> ().collidingWith;
+			capturedPiece = possibleWarp.GetComponent<Warp> ().collidingWith;
 		
 			//Debug.Log ("captured piece is: " + capturedPiece.tag + "at " + capturedPiece.GetComponent<Piece> ().row + " " + capturedPiece.GetComponent<Piece> ().col);
 			//isWarp = false;
@@ -242,14 +244,29 @@ public class LegalMoves {
 			else
 				Debug.Log ("JumpSpace(warp) is: " + jumpSpace.GetComponent<Warp> ().row + " " + jumpSpace.GetComponent<Warp> ().col);
 			
-			//capturedPiece = possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().collidingWith;
-			
-			//Debug.Log ("captured piece is: " + possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().collidingWith.tag + "at " +  capturedPiece.GetComponent<Piece> ().row + " " + capturedPiece.GetComponent<Piece> ().col);
-			//isWarp = false;
+			capturedPiece = possibleWarp.GetComponent<Warp> ().linkedWarp.GetComponent<Warp> ().collidingWith;
+
 			return true;
 		}
 		return false;
 
+	}
+
+	bool CanJumpThenWarp ()
+	{
+		if (jumpSpace.tag != "Warp")
+			return false;
+
+		if (!IsTileEmpty (adjSpace) && EnemyInSpace (adjSpace) && IsTileEmpty (jumpSpace)
+		  && IsTileEmpty (jumpSpace.GetComponent<Warp> ().linkedWarp)) {
+
+			if(adjSpace.tag == "Tile")
+				capturedPiece = adjSpace.GetComponent<AdjTile> ().collidingWith;
+			else
+				capturedPiece = adjSpace.GetComponent<Warp> ().collidingWith;
+			return true;
+		}
+		return false;
 	}
 
 }

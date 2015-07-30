@@ -3,11 +3,13 @@ using System.Collections;
 
 public class Manager : MonoBehaviour {
 	public Board board;
+	string currPlayer;
 
 	//Have selection thing here
 
 	void Start () {
 		TwoPlayerLocal ();
+		currPlayer = Board.WhoIsThis ();
 	}
 
 	void OnePlayer () {
@@ -27,13 +29,19 @@ public class Manager : MonoBehaviour {
 
 
 	void SetUp () {
-		GameObject boardObject = new GameObject("board");
-		boardObject.transform.parent = transform;
-		board = boardObject.AddComponent<Board>();
-
+		GameObject boardObject;
+		//if (!Board.isInitialized) {
+			boardObject = new GameObject ("board");
+		board = boardObject.AddComponent<Board> ();
+			
+			boardObject.transform.parent = transform;
+			//Board.isInitialized = true;
+		//} else {
+			//boardObject = Board;
+		//}
 		// TODO: Run parse coroutine
 
-
+		
 		Board.turnCounter = this.currentTurnFromParse;// from parse
 		//TODO:
 		// If thisPlayerNumber = this turn's player
@@ -49,7 +57,7 @@ public class Manager : MonoBehaviour {
 		//Board.currPlayer = "PlayerOne"; // from parse
 
 		// Let's store where the peices are now in that string
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < 32; i++)
 		{
 			// declare local variables so that the values don't have to be fetched through dot operators multiple times if needed
 			// This is a minor cost saving optomization
@@ -77,6 +85,11 @@ public class Manager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		if (currPlayer != Board.WhoIsThis ()) {
+			this.gameObject.transform.Rotate(new Vector3(0, 0, 180));
+			currPlayer = Board.WhoIsThis();
+		}
 	
 	}
 

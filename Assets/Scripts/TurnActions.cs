@@ -19,7 +19,7 @@ public class TurnActions : MonoBehaviour {
 		
 	// Use this for initialization
 	void Start () {
-	
+		//makeTurn ();
 	}
 	
 	// Update is called once per frame
