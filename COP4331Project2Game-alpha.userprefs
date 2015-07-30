@@ -1,0 +1,19 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AdjTile.cs">
+    <Files>
+      <File FileName="Assets\Scripts\Board.cs" Line="215" Column="18" />
+      <File FileName="Assets\Scripts\Piece.cs" Line="27" Column="31" />
+      <File FileName="Assets\Scripts\Warp.cs" Line="25" Column="13" />
+      <File FileName="Assets\Scripts\AdjTile.cs" Line="17" Column="29" />
+      <File FileName="Assets\Scripts\LegalMoves.cs" Line="248" Column="1" />
+      <File FileName="Assets\Scripts\Manager.cs" Line="41" Column="5" />
+      <File FileName="Assets\Scripts\TurnActions.cs" Line="22" Column="5" />
+      <File FileName="Assets\Scripts\WaitingForPlayer.cs" Line="140" Column="21" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
