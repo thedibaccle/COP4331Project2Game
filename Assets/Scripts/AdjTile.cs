@@ -18,14 +18,17 @@ public class AdjTile : MonoBehaviour
 		row = pos.x / 2;
 		col = -pos.y / 2;
 		//objTile = this.gameObject;
+		if(!Board.dicboardData.ContainsKey(pos)){
 		Board.dicboardData.Add (pos, this.gameObject);
+		}
 		Board.boardData [(int)row, (int)col] = this.gameObject;
 		//Board.cacheBoardData [(int)row, (int)col] = this.gameObject;
-		this.gameObject.AddComponent<Rigidbody> ();
-		this.gameObject.GetComponent<Rigidbody> ().useGravity = false;
-		this.gameObject.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezePositionZ;
-		this.gameObject.GetComponent<Rigidbody> ().mass = 9999999;
-
+		if (this.gameObject.GetComponent<Rigidbody>() == null) {
+			this.gameObject.AddComponent<Rigidbody> ();
+			this.gameObject.GetComponent<Rigidbody> ().useGravity = false;
+			this.gameObject.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezePositionZ;
+			this.gameObject.GetComponent<Rigidbody> ().mass = 9999999;
+		}
 
 	}
 	 

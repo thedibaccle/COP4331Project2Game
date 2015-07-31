@@ -19,6 +19,7 @@ public class WaitingForPlayer : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		//Destroy (GameObject.Find("gameCamera"));
 		checkIfMyTurn ();
 	}
 

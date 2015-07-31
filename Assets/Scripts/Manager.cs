@@ -28,17 +28,18 @@ public class Manager : MonoBehaviour {
 	private string boardState1dString = "";
 
 
-	void SetUp () {
+	void SetUp () 
+	{
 		GameObject boardObject;
-		//if (!Board.isInitialized) {
+		if (!Board.isInitialized) {
 			boardObject = new GameObject ("board");
-		board = boardObject.AddComponent<Board> ();
+			board = boardObject.AddComponent<Board> ();
 			
 			boardObject.transform.parent = transform;
-			//Board.isInitialized = true;
-		//} else {
+			Board.isInitialized = true;
+		} else {
 			//boardObject = Board;
-		//}
+		}
 		// TODO: Run parse coroutine
 
 		
@@ -71,7 +72,7 @@ public class Manager : MonoBehaviour {
 				string _name = Board.pieceData[i].name;
 				
 				Board.gameBoardState[_row,_col] = Board.pieceData[i].name;
-				Debug.LogWarning("MANAGER PEICE DATA: " + _name + "@ " + _row + "x" + _col);
+				//Debug.LogWarning("MANAGER PEICE DATA: " + _name + "@ " + _row + "x" + _col);
 			}
 		}
 		// TODO: Setup where peices go!

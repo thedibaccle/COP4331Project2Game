@@ -82,7 +82,7 @@ public class UserManagerScript : MonoBehaviour
 			Application.LoadLevel("scnInitMatching");
 		}
 		yield break;
-		Debug.Log ("You'll never see this"); // produces a dead code warning
+		//Debug.Log ("You'll never see this"); // produces a dead code warning
 	}
 
 

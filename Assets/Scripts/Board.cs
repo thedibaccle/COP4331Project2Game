@@ -9,63 +9,61 @@ using System.Collections.Generic; // need this STUPID THING so IENumerable works
 //using UnityEngine.EventSystems.IPointerClickHandler;
 
 public class Board : MonoBehaviour {
-	//public AdjTile adjTile;
+	public static bool isOnlineMode = true; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
+
+	public static bool isInitialized = false; // used to check if Board was ever loaded once before
+	private static string _currPlayer;
+
 	public static GameObject[,] boardData = new GameObject[8, 8];
 	public static GameObject[] pieceData = new GameObject[32];
 	public static bool[, ] isPieceThere;
 	public static GameObject capturedPiece = null;
 	public static Dictionary<Vector3, GameObject> dicboardData = new Dictionary<Vector3, GameObject>();
-	//public Warp warpTile;
-	//public Piece piece;
-	//public GameObject warp, tile, player;
-	public static bool playerMadeMove;
-	//public int WhosTurnIsIt = 0;
-	//Maximum number of pieces on board is 32
-	//public Moves[] moves;
 	public LegalMoves legalMoves = new LegalMoves();
-	//float setAtRow = -1.0F, setAtCol;
-	public static bool isInitialized = false;
+	public static bool playerMadeMove;
 	public static string[,] gameBoardState = getNullBoard ();
-	public static bool isPlayerWaiting = true;
-
-	// the underscore indicates (sorta!!) that it's supposed to be a private/local variable NOT to be accessed outside of declaration scope
-	// It's typically used as a head's up to other programmers that it's meant to be this way SOMETIMES. It's a weird unwritten rule.
-	// In other words, just a heads up of what/why
-	private static string _currPlayer;
-
-	private static bool isOnlineMode = false; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
-
-	/// Variables from TurnActions
-	private static void makeTurn()
-	{
-		// This performs the online parse move making
-		if (isOnlineMode) {
-
-			// This will make the move, and afterwards move to the scnWaiting or perform the script code from that scene
-			// the waiting scene/code whichever, will end up being what sets isPlayerWaiting to false once it is this player's turn again.
-			Debug.LogWarning ("!!! GOING INTO NEW AREA");
-			//Application.LoadLevel ("scnTakeTurn");
-		} else
-		{
-
-			Board._currPlayer = WhoIsThis();  // set the player to the next one (if it wasn't done already)
-			isPlayerWaiting = false; // tell the game that this person ACTUALLY using this app, doesn't have to wait any longer to make a move
-		}
-	}
-
-	///////////////////////////////
-
-
-
+	public static bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
 
 	// William:
 	// Tried to get a ToString() of the object's name from peiceData but the name was CONSTANTLY returning a null reference.
 	// So the positions of the peices are being stored in this string instead so that parse can set/get this
 	public static string peicePlacement = "";
-
 	public static int turnCounter = 0;
-
 	private static bool playerInitialized = false;
+	
+	// Use this for initialization
+	void Start () {
+		//1D GameObject array [64]
+		//Only checks adjacent tiles for ONE warp
+		//I have to instantiate all of the warps? Noooooooooooooooooooooo
+		//Link paired warp tiles together via gameobject variable
+		//Physics.gravity = new Vector3 (0, 0, 1);
+
+
+		GameObject[,] boardData = new GameObject[8, 8];
+		GameObject[] pieceData = new GameObject[32];
+		bool[, ] isPieceThere;
+		GameObject capturedPiece = null;
+		Dictionary<Vector3, GameObject> dicboardData = new Dictionary<Vector3, GameObject>();
+		LegalMoves legalMoves = new LegalMoves();
+		bool playerMadeMove;
+		string[,] gameBoardState = getNullBoard ();
+		bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
+
+		if (!isOnlineMode) 
+		{
+			_currPlayer = "PlayerOne";
+		} else 
+		{
+			// check if the player is logged in still, if not, send them back to login
+			if(ParseUser.CurrentUser == null)
+			{
+				Application.LoadLevel("scnMainMenu");
+			}
+		}
+		//moves = legalMoves.getLegalMoves(currPlayer, boardData);
+	}
+
 	public static void setupCurrPlayer(int thisPlayer)
 	{
 		// thisPlayer int should be either 1 or 2
@@ -74,7 +72,7 @@ public class Board : MonoBehaviour {
 			_currPlayer = (thisPlayer % 2 == 0) ? "PlayerTwo" : "PlayerOne"; // this might be flipped, not sure
 		}
 	}
-
+	
 	public static string[,] getNullBoard()
 	{
 		return new string[,]{
@@ -88,11 +86,11 @@ public class Board : MonoBehaviour {
 			{"null","null","null","null","null","null","null","null"}
 		};
 	}
-
+	
 	public static string getNullBoardToString()
 	{
 		return "p2_0,p2_1,p2_2,p2_3,p2_4,p2_5,p2_6,p2_7," +
-				"null,null,null,null,null,null,null,null," +
+			"null,null,null,null,null,null,null,null," +
 				"null,null,null,null,null,null,null,null," +
 				"null,null,null,null,null,null,null,null," +
 				"null,null,null,null,null,null,null,null," +
@@ -100,16 +98,40 @@ public class Board : MonoBehaviour {
 				"null,null,null,null,null,null,null,null," +
 				"p1_0,p1_1,p1_2,p1_3,p1_4,p1_5,p1_6,p1_7";
 	}
-	// Use this for initialization
-	void Start () {
-		//1D GameObject array [64]
-		//Only checks adjacent tiles for ONE warp
-		//I have to instantiate all of the warps? Noooooooooooooooooooooo
-		//Link paired warp tiles together via gameobject variable
-		//Physics.gravity = new Vector3 (0, 0, 1);
-		if (!isOnlineMode){_currPlayer = "PlayerOne";}
-		//moves = legalMoves.getLegalMoves(currPlayer, boardData);
+	
+	
+	private static void makeTurn()
+	{
+		// This performs the online parse move making
+		
+		if (isOnlineMode) {
+			
+			// This will make the move, and afterwards move to the scnWaiting or perform the script code from that scene
+			// the waiting scene/code whichever, will end up being what sets isPlayerWaiting to false once it is this player's turn again.
+			Debug.LogWarning ("!!! GOING INTO NEW AREA");
+			GameObject _manager = GameObject.Find("_Manager");
+			var test = _manager.GetComponent<TurnActions>();
+			//if(test==null)
+			if(_manager==null)
+			{
+				Debug.Log ("It's null...");
+			}
+			else
+			{
+				test.makeTurn();
+			}
+			
+			
+		} else
+		{
+			
+			Board._currPlayer = WhoIsThis();  // set the player to the next one (if it wasn't done already)
+			isPlayerWaiting = false; // tell the game that this person ACTUALLY using this app, doesn't have to wait any longer to make a move
+		}
 	}
+	
+	///////////////////////////////
+	
 
 
 
@@ -287,7 +309,7 @@ public class Board : MonoBehaviour {
 			//var turnActionsScript = new TurnActions();
 			//turnActionsScript.makeTurn();
 			//Debug.LogWarning(dicboardData.ToString());
-			int counter = 0;
+			//int counter = 0;
 
 			// Reset our boardState 2d string to null
 			gameBoardState = getNullBoard();
