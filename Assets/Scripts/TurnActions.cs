@@ -157,6 +157,7 @@ public class TurnActions : MonoBehaviour {
 
 
 			Debug.Log ("Going to waiting screen...");
+
 			Application.LoadLevel ("scnWaiting");
 			yield break;
 			//Application.LoadLevel("ExampleScene");

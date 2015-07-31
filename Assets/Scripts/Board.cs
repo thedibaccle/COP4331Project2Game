@@ -39,16 +39,22 @@ public class Board : MonoBehaviour {
 		//I have to instantiate all of the warps? Noooooooooooooooooooooo
 		//Link paired warp tiles together via gameobject variable
 		//Physics.gravity = new Vector3 (0, 0, 1);
+		Debug.Log("this.gameMatch[\"nextPlayerUsername\"] => " + Board.gameMatch["thisPlayerUsername"]);
+		Debug.Log("this.gameMatch[\"nextPlayerUsername\"] => " + Board.gameMatch["nextPlayerUsername"]);
+
+
 
 		//gameMatch = null; // DO NOT ALLOW THIS TO EXIST, IT NEEDS TO BE LEFT ALONE, LET OTHER SCRIPTS MANIP THIS!
 		GameObject[,] boardData = new GameObject[8, 8];
 		GameObject[] pieceData = new GameObject[32];
 		bool[, ] isPieceThere;
-		GameObject capturedPiece = null;
+
 		Dictionary<Vector3, GameObject> dicboardData = new Dictionary<Vector3, GameObject>();
 		LegalMoves legalMoves = new LegalMoves();
-		bool playerMadeMove;
-		string[,] gameBoardState = getNullBoard ();
+
+		convertToGameBoard(Board.gameMatch["thisBoardState"].ToString());
+		// LoadPiecesToBoard()
+
 		bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
 
 		if (!isOnlineMode) 
@@ -156,30 +162,9 @@ public class Board : MonoBehaviour {
 
 	void Update ()
 	{
-		// SINGLE PLAYER MODE (USE THIS)
-		//if (playerMadeMove) {
-		//	currPlayer = WhosTurnIsItNow (count);
-		//	playerMadeMove = false;
-		//}
 
-				//Json.JsonConvert.SerializeObject(pieceData);
-			//Debug.LogWarning(Board.gameBoardState);
-					
-			// TODO: might need a performing move lockout here so that other pieces can't be moved while the thread for making the move takes place
-
-	
-		//Debug.Log (currPlayer);
-		//Continuously checks if user is selecting a piece
-		//have the current player's pieces bob
-		//highlight the piece that is being selected
 	}
 
-	/*TODO~~: make toString for ALL of possible moves
-	 * Convert to string
-	 * 
-	 * 
-	 * 
-	 */
 
 	public static void Move (GameObject from, Vector3 to) 
 	{
@@ -376,6 +361,47 @@ public class Board : MonoBehaviour {
 		}
 		return returnString;
 	}
+
+	public static void convertToGameBoard(string boardStateString)
+	{
+		//boardStateString = "p2_0,p2_1,p2_2,p2_3,p2_4,p2_5,p2_6,p2_7,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,p1_0,p1_1,p1_2,p1_3,p1_4,p1_5,p1_6,p1_7";
+		Debug.LogWarning (boardStateString);
+		string[] _boardPieces = boardStateString.Split(',');
+		gameBoardState = new string[8,8];
+		int _counter = 0;
+		int i = 0;
+		int j = 0;
+		foreach (string _piece in _boardPieces)
+		{
+
+			//Debug.Log("boardData[" + i + ","+j+"] = " + _piece);
+			if(_piece.Equals(null) || _piece.Equals("null"))
+			{
+				boardData[i,j] = null;
+			}
+			else
+			{
+				boardData[i,j] = GameObject.Find(_piece);
+				boardData[i,j].GetComponent<Piece>().pos.x = i*2;
+				boardData[i,j].GetComponent<Piece>().pos.y = j*2;
+
+			}
+			if(i%7==0)
+			{
+				j++;
+			}
+			i = i%7;
+			j = j%7;
+			i++;
+
+
+			_counter++;
+		}
+		Debug.Log (_counter);
+
+		
+	}
+
 
 	public static GameObject ObjectAt (float x, float y, float z) {
 		Vector3 pos = new Vector3 (x, y, z);
