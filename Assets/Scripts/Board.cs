@@ -10,6 +10,7 @@ using System.Collections.Generic; // need this STUPID THING so IENumerable works
 
 public class Board : MonoBehaviour {
 	public static bool isOnlineMode = true; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
+	public static ParseObject gameMatch;
 
 	public static bool isInitialized = false; // used to check if Board was ever loaded once before
 	private static string _currPlayer;
@@ -23,7 +24,7 @@ public class Board : MonoBehaviour {
 	public static bool playerMadeMove;
 	public static string[,] gameBoardState = getNullBoard ();
 	public static bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
-
+	public static string turnToSave;
 	// William:
 	// Tried to get a ToString() of the object's name from peiceData but the name was CONSTANTLY returning a null reference.
 	// So the positions of the peices are being stored in this string instead so that parse can set/get this
@@ -39,7 +40,7 @@ public class Board : MonoBehaviour {
 		//Link paired warp tiles together via gameobject variable
 		//Physics.gravity = new Vector3 (0, 0, 1);
 
-
+		//gameMatch = null; // DO NOT ALLOW THIS TO EXIST, IT NEEDS TO BE LEFT ALONE, LET OTHER SCRIPTS MANIP THIS!
 		GameObject[,] boardData = new GameObject[8, 8];
 		GameObject[] pieceData = new GameObject[32];
 		bool[, ] isPieceThere;
@@ -56,9 +57,14 @@ public class Board : MonoBehaviour {
 		} else 
 		{
 			// check if the player is logged in still, if not, send them back to login
-			if(ParseUser.CurrentUser == null)
+			turnToSave = Board.getBoardStateToString();
+			if(ParseUser.CurrentUser == null || Board.gameMatch == null)
 			{
 				Application.LoadLevel("scnMainMenu");
+			}
+			else
+			{
+				Debug.Log ("GAME ON! GameObjID = " + Board.gameMatch.ObjectId);
 			}
 		}
 		//moves = legalMoves.getLegalMoves(currPlayer, boardData);

@@ -9,9 +9,9 @@ public class OnStartScript : MonoBehaviour {
 	void Start () 
 	{
 		// hide all canvases
-		GameObject canvasLoginGo = GameObject.Find("canvasLogin");
+		//GameObject canvasLoginGo = GameObject.Find("canvasLogin");
 
-		canvasLoginGo.SetActive (false);
+		//canvasLoginGo.SetActive (false);
 
 		if (ParseUser.CurrentUser != null)
 		{
@@ -25,7 +25,7 @@ public class OnStartScript : MonoBehaviour {
 		{
 			// show the signup or login screen
 			Debug.Log ("User needs to sign up or login.");
-			canvasLoginGo.SetActive (true);
+			//canvasLoginGo.SetActive (true);
 		}
 	}
 	
