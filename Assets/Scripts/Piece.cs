@@ -20,9 +20,10 @@ public class Piece: MonoBehaviour {
 	//public string name;
 	public static bool tapped;
 	public bool isSplit = false;
-	public static int pieceCounter = 0;
+	public static int pieceCounter;
 	// Use this for initialization
 	void Start () {
+		pieceCounter = 0; // reset this everytime
 		pos = transform.position;
 		pos.y = (float)((int)pos.y);
 		getPositionInBoardData ();

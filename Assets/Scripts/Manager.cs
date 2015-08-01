@@ -24,7 +24,6 @@ public class Manager : MonoBehaviour {
 	}
 
 
-	private int currentTurnFromParse = 0;
 	private string boardState1dString = "";
 
 
@@ -43,7 +42,7 @@ public class Manager : MonoBehaviour {
 		// TODO: Run parse coroutine
 
 		
-		Board.turnCounter = this.currentTurnFromParse;// from parse
+
 		//TODO:
 		// If thisPlayerNumber = this turn's player
 		// and if this turn's player == parse.username
@@ -54,7 +53,7 @@ public class Manager : MonoBehaviour {
 		Board.isPlayerWaiting = false; // DEBUG ONLY
 		// ^ !!!!!!!!!! DANGER
 
-		Board.setupCurrPlayer (1); // debug using 1 to indicate player 1
+		//Board.setupCurrPlayer (1); // debug using 1 to indicate player 1
 		//Board.currPlayer = "PlayerOne"; // from parse
 
 		// Let's store where the peices are now in that string

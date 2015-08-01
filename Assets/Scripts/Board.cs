@@ -45,14 +45,15 @@ public class Board : MonoBehaviour {
 
 
 		//gameMatch = null; // DO NOT ALLOW THIS TO EXIST, IT NEEDS TO BE LEFT ALONE, LET OTHER SCRIPTS MANIP THIS!
-		GameObject[,] boardData = new GameObject[8, 8];
-		GameObject[] pieceData = new GameObject[32];
-		bool[, ] isPieceThere;
+		boardData = new GameObject[8, 8];
+		pieceData = new GameObject[32];
+	
 
-		Dictionary<Vector3, GameObject> dicboardData = new Dictionary<Vector3, GameObject>();
-		LegalMoves legalMoves = new LegalMoves();
+		dicboardData = new Dictionary<Vector3, GameObject>();
+		legalMoves = new LegalMoves();
 
-		convertToGameBoard(Board.gameMatch["thisBoardState"].ToString());
+
+
 		// LoadPiecesToBoard()
 
 		bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
@@ -60,10 +61,13 @@ public class Board : MonoBehaviour {
 		if (!isOnlineMode) 
 		{
 			_currPlayer = "PlayerOne";
-		} else 
+		} 
+		else 
 		{
+
+
+
 			// check if the player is logged in still, if not, send them back to login
-			turnToSave = Board.getBoardStateToString();
 			if(ParseUser.CurrentUser == null || Board.gameMatch == null)
 			{
 				Application.LoadLevel("scnMainMenu");
@@ -72,8 +76,25 @@ public class Board : MonoBehaviour {
 			{
 				Debug.Log ("GAME ON! GameObjID = " + Board.gameMatch.ObjectId);
 			}
+
+			setupCurrPlayer(turnCounter);
+			// TODO: This is the method that will conver the string to positionals
+			// then we need to actually make the pieces BE there....
+			// This is the method I'm stuck inside...
+			// reset to a standard null game board
+			string boardString = getNullBoardToString();
+			if(Board.gameMatch["thisBoardState"]!=null)
+			{
+				boardString = Board.gameMatch["thisBoardState"].ToString();
+			}
+			convertToGameBoard(boardString);
+
+
+			//turnToSave = Board.getBoardStateToString();
 		}
 		//moves = legalMoves.getLegalMoves(currPlayer, boardData);
+
+		Debug.LogWarning (turnCounter + "}WHOSE TURN IS IT ANYWAYS?: " + WhoIsThis());
 	}
 
 	public static void setupCurrPlayer(int thisPlayer)
@@ -81,7 +102,14 @@ public class Board : MonoBehaviour {
 		// thisPlayer int should be either 1 or 2
 		if (!playerInitialized) {
 			playerInitialized = true;
-			_currPlayer = (thisPlayer % 2 == 0) ? "PlayerTwo" : "PlayerOne"; // this might be flipped, not sure
+			if(thisPlayer > 0)
+			{
+			_currPlayer = (thisPlayer % 2 == 0) ? "PlayerOne":"PlayerTwo"; // this might be flipped, not sure
+			}
+			else
+			{
+				_currPlayer = "PlayerOne";
+			}
 		}
 	}
 	
@@ -150,9 +178,30 @@ public class Board : MonoBehaviour {
 	public static string WhoIsThis()
 	{
 		if (!isOnlineMode) {
+
 			return (turnCounter % 2 == 0) ? "PlayerOne" : "PlayerTwo";
 		} else
 		{
+			Debug.Log ("HERP: " + gameMatch["thisTurnNumber"]);
+			if(!Board.gameMatch.Equals(null) && !Board.gameMatch["thisTurnNumber"].Equals(null))
+			{
+				Debug.Log ("DERP: " + gameMatch["thisTurnNumber"]);
+				//turnCounter = (int);
+			}
+			else
+			{
+				turnCounter = 0;
+			}
+
+			if(turnCounter > 0)
+			{
+				_currPlayer = (turnCounter % 2 == 0) ? "PlayerOne":"PlayerTwo"; // this might be flipped, not sure
+			}
+			else
+			{
+				_currPlayer = "PlayerOne";
+			}
+
 			return Board._currPlayer;
 		}
 
@@ -289,7 +338,7 @@ public class Board : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log ("THIS IS NOT AN AVAILABLE FUCKING MOVE YOU STUPID PIECE OF SHIT");
+			Debug.Log ("THIS IS NOT AN AVAILABLE FUCKING MOVE");// YOU STUPID PIECE OF SHIT");
 		}
 
 		if (playerMadeMove) 
@@ -325,7 +374,7 @@ public class Board : MonoBehaviour {
 			}
 
 			Debug.Log(getBoardStateToString()); // combines the 2d string array into a single array
-
+			turnToSave=getBoardStateToString();
 			makeTurn();
 			//var turnActionsScript = new TurnActions();
 			//turnActionsScript.makeTurn ();
@@ -365,34 +414,75 @@ public class Board : MonoBehaviour {
 	public static void convertToGameBoard(string boardStateString)
 	{
 		//boardStateString = "p2_0,p2_1,p2_2,p2_3,p2_4,p2_5,p2_6,p2_7,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,p1_0,p1_1,p1_2,p1_3,p1_4,p1_5,p1_6,p1_7";
-		Debug.LogWarning (boardStateString);
+		//Debug.LogWarning (boardStateString);
 		string[] _boardPieces = boardStateString.Split(',');
 		gameBoardState = new string[8,8];
 		int _counter = 0;
-		int i = 0;
-		int j = 0;
+		int i = 7;
+		int j = 7;
+
+
 		foreach (string _piece in _boardPieces)
 		{
+
+			i++;
+			if(i>7)
+			{
+				i = 0;
+				j++;
+			}
+			if(j>7)
+			{
+				j=0;
+			}
 
 			//Debug.Log("boardData[" + i + ","+j+"] = " + _piece);
 			if(_piece.Equals(null) || _piece.Equals("null"))
 			{
-				boardData[i,j] = null;
+				boardData[j,i] = null;
 			}
 			else
 			{
-				boardData[i,j] = GameObject.Find(_piece);
-				boardData[i,j].GetComponent<Piece>().pos.x = i*2;
-				boardData[i,j].GetComponent<Piece>().pos.y = j*2;
+				// find where the string is that has this name
+				// get wherever the hell it is right now (x,y)
+				// transform it to the new i,j values
 
+
+				// How do I do this properly?
+				boardData[i,j] = GameObject.Find(_piece);
+				//if(boardData[i,j] == null)
+				// because the x/y are based on position that includes gaps between pieces this has to be calculated.
+				// example: 0,0 = 0,0
+				//          0,1 = 0,2 (since there was 1 gap between those spots)
+				//          0,2 = 0,4 (since there was 2 gaps between those spots)
+				Vector3 positionInGame = boardData[i,j].GetComponent<Piece>().pos;
+				//Debug.Log ("Wanting to put down i=" + i + " j=" + j);
+				///////////////////////////////////////////////////////////////////////////////
+				//// Sanity Check Board Layout
+				///////////////////////////////////////////////////////////////////////////////
+				////
+				///    [00,00]||[02,00]||[04,00]||[06,00]||[08,00]||[10,00]||[12,00]||[14,00]
+				///    [00,02]||[02,02]||[04,02]||[06,02]||[08,02]||[10,02]||[12,02]||[14,02]
+				///    [00,04]||[02,04]||[04,04]||[06,04]||[08,04]||[10,04]||[12,04]||[14,04]
+				///    [00,06]||[02,06]||[04,06]||[06,06]||[08,06]||[10,06]||[12,06]||[14,06]
+				///    [00,08]||[02,08]||[04,08]||[06,08]||[08,08]||[10,08]||[12,08]||[14,08]
+				///    [00,10]||[02,10]||[04,10]||[06,10]||[08,10]||[10,10]||[12,10]||[14,10]
+				///    [00,12]||[02,12]||[04,12]||[06,12]||[08,12]||[10,12]||[12,12]||[14,12]
+				///    [00,14]||[02,14]||[04,14]||[06,14]||[08,14]||[10,14]||[12,14]||[14,14]
+				/// 
+				///////////////////////////////////////////////////////////////////////////////
+				//Debug.LogWarning("Was at: " + (int) positionInGame.x + ", " + (int)positionInGame.y);
+				//Debug.LogWarning("Was at: " + (int) pieceData[i,j].pos.x + ", " + (int)positionInGame.y);
+				 
+				float newSpotX = boardData[i,j].GetComponent<Piece>().pos.x + ((int)positionInGame.x - ((i>0)?i*2:i));
+				float newSpotY = boardData[i,j].GetComponent<Piece>().pos.y - ((int)positionInGame.y + ((j>0)?j*2:j));
+				positionInGame.x = newSpotX;
+				positionInGame.y = newSpotY;
+				boardData[i,j].GetComponent<Piece>().transform.position = positionInGame;
+				//Debug.LogWarning("Now at: " + (int) positionInGame.x + ", " + (int)positionInGame.y);
 			}
-			if(i%7==0)
-			{
-				j++;
-			}
-			i = i%7;
-			j = j%7;
-			i++;
+
+
 
 
 			_counter++;
@@ -402,6 +492,29 @@ public class Board : MonoBehaviour {
 		
 	}
 
+	public static void printBoardData()
+	{
+		///////////////////////////////////////////////////////////////////////////////
+		//// Sanity Check Board Layout
+		///////////////////////////////////////////////////////////////////////////////
+		////
+		///    [00,00]||[02,00]||[04,00]||[06,00]||[08,00]||[10,00]||[12,00]||[14,00]
+		///    [00,02]||[02,02]||[04,02]||[06,02]||[08,02]||[10,02]||[12,02]||[14,02]
+		///    [00,04]||[02,04]||[04,04]||[06,04]||[08,04]||[10,04]||[12,04]||[14,04]
+		///    [00,06]||[02,06]||[04,06]||[06,06]||[08,06]||[10,06]||[12,06]||[14,06]
+		///    [00,08]||[02,08]||[04,08]||[06,08]||[08,08]||[10,08]||[12,08]||[14,08]
+		///    [00,10]||[02,10]||[04,10]||[06,10]||[08,10]||[10,10]||[12,10]||[14,10]
+		///    [00,12]||[02,12]||[04,12]||[06,12]||[08,12]||[10,12]||[12,12]||[14,12]
+		///    [00,14]||[02,14]||[04,14]||[06,14]||[08,14]||[10,14]||[12,14]||[14,14]
+		/// 
+		///////////////////////////////////////////////////////////////////////////////
+		for (int i = 0; i<8; i++) {
+			for(int j = 0; j<8; j++)
+			{
+				Debug.Log ("[00,00]||[02,00]||[04,00]||[06,00]||[08,00]||[10,00]||[12,00]||[14,00]");
+			}
+		}
+	}
 
 	public static GameObject ObjectAt (float x, float y, float z) {
 		Vector3 pos = new Vector3 (x, y, z);

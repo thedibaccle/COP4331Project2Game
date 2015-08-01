@@ -43,7 +43,7 @@ public class TurnActions : MonoBehaviour {
 	protected IEnumerator makeTheDamnTurn()
 	{
 		
-		
+		Debug.Log ("Step 1");
 		string error;
 
 
@@ -86,6 +86,7 @@ public class TurnActions : MonoBehaviour {
 			Debug.Log("this.thisUsernameFound => " + this.thisUsernameFound);
 			Debug.Log("this.nextUsernameFound => " + this.nextUsernameFound);
 		});
+		Debug.Log ("Step 2");
 		int durationTime = 0;
 		for (int i = 0; i < 30; i++) 
 		{
@@ -101,7 +102,7 @@ public class TurnActions : MonoBehaviour {
 		//Debug.Log ("DERP: " + playerGame.ObjectId.ToString ());
 		//this.gameObjID = playerGame.ObjectId.ToString();
 		//Debug.Log ("BERP: " + this.gameObjID);
-		
+		Debug.Log ("Step 3");
 		if (runQuery.IsFaulted || runQuery.IsCanceled)
 		{
 			Debug.Log("Error " + runQuery.Exception.Message);
@@ -110,12 +111,13 @@ public class TurnActions : MonoBehaviour {
 		}
 		else
 		{
+			Debug.Log ("Step 4");
 			Debug.Log("Query Sucessful.");
 			string otherPlayer = this.gameMatch.Get<string>("thisPlayerUsername");
 			int thisPlayerNumber = this.gameMatch.Get<int>("thisPlayerNumber");
 			Debug.Log ("Made it here>>");
 			string _boardState = Board.turnToSave;
-			Debug.Log ("Board: " + _boardState);
+			Debug.Log ("Board going into Parse: " + _boardState);
 		
 				// Now let's update it with some new data.  In this case, only cheatMode
 				// and score will get sent to the cloud.  playerName hasn't changed.
@@ -138,6 +140,7 @@ public class TurnActions : MonoBehaviour {
 		*/
 			//Task saveTask = bigObject.SaveAsync();
 			//Debug.LogWarning("Dirty?: " + this.gameMatch.IsDirty);
+			Debug.Log ("Step 5");
 			Task performGameAsync=this.gameMatch.SaveAsync();
 			durationTime = 0;
 			for (int i = 0; i < 30; i++) 
@@ -150,6 +153,7 @@ public class TurnActions : MonoBehaviour {
 					yield return new WaitForSeconds (1);
 				}
 			}
+			Debug.Log ("Step 6");
 			Debug.Log ("<<Made it here (is complete? =>" + performGameAsync.IsCompleted + ")");
 			Debug.Log ("Done! Waited for Async save: " + durationTime + " second(s).");
 

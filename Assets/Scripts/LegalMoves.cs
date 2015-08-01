@@ -32,6 +32,7 @@ public class LegalMoves {
 		int row = (int)selectedPiece.GetComponent<Piece> ().pos.x;
 		int col = (int)selectedPiece.GetComponent<Piece> ().pos.y;
 
+		Debug.Log ("Getting possibleWarp of boardData[" + row/2 + "," + -col/2 + "]");
 		possibleWarp = Board.boardData [row/2, -col/2];
 		Debug.Log ("Possible Warp that piece is on: " + possibleWarp);
 
@@ -42,7 +43,7 @@ public class LegalMoves {
 
 		for (int i = -1; i < 2; i++)
 			for (int j = -1; j < 2; j++) {
-				//Debug.Log ("Checking if adjacent tile search is in bounds  " + (row + i*2) + " " + (col + j*2));
+				Debug.Log ("Checking if adjacent tile search is in bounds  " + (row + i*2) + " " + (col + j*2));
 				if (IsInBounds (row + i * 2, - col - j * 2)) {
 
 					//Debug.Log ("I'M IN MUTHAFUCKA");
@@ -182,6 +183,9 @@ public class LegalMoves {
 	}	
 
 	bool OnlyWarp () {
+		if (possibleWarp == null) {
+			Debug.Log ("Something that isn't supposed to be null, is null...");
+		}
 		if (possibleWarp.tag != "Warp")
 			return false;		
 		//Debug.Log ("In OnlyWarp");
