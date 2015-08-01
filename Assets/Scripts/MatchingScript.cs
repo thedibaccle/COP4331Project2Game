@@ -291,6 +291,7 @@ public class MatchingScript : MonoBehaviour {
 			{
 				this.gameObjID = "NewGame";
 				Debug.Log("Results from query: " + this.gameObjID);
+				Board.gameMatch = this.gameMatch;
 				//Application.LoadLevel("ExampleScene");
 			}
 			

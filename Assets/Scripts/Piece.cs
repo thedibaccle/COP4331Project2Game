@@ -20,9 +20,10 @@ public class Piece: MonoBehaviour {
 	//public string name;
 	public static bool tapped;
 	public bool isSplit = false;
-	public static int pieceCounter = 0;
+	public static int pieceCounter;
 	// Use this for initialization
 	void Start () {
+		pieceCounter = 0; // reset this everytime
 		pos = transform.position;
 		pos.y = (float)((int)pos.y);
 		getPositionInBoardData ();
@@ -38,7 +39,10 @@ public class Piece: MonoBehaviour {
 
 		Board.pieceData [pieceCounter] = this.gameObject;
 		pieceCounter++;
-		Board.dicboardData.Add (pos, this.gameObject);
+
+		if (!Board.dicboardData.ContainsKey (pos)) {
+			Board.dicboardData.Add (pos, this.gameObject);
+		}
 		Board.gameBoardState[(int)row, (int)col] = this.name;
 		//Board.peicePlacement += this.name + "@" + (-this.pos.y/2) + "x" + this.pos.x/2;
 		//Board.boardData [(int)row, (int)col] = this.gameObject;

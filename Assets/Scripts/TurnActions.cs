@@ -39,28 +39,12 @@ public class TurnActions : MonoBehaviour {
 	}
 
 
+
 	protected IEnumerator makeTheDamnTurn()
 	{
 		
-		
+		Debug.Log ("Step 1");
 		string error;
-		
-		//var query1 = ParseObject.GetQuery(gameObjName);
-		//query1 = query1.WhereEqualTo("thisPlayerUsername", ParseUser.CurrentUser.Username);
-		//query1 = query1.WhereNotEqualTo("inProgress", "Finished");
-		
-		//var query2 = ParseObject.GetQuery(gameObjName);
-		//query2 = query2.WhereEqualTo("nextPlayerUsername", ParseUser.CurrentUser.Username);
-		//query2 = query2.WhereNotEqualTo("inProgress", "Finished"); 
-		
-		// TODO: This is HUGELY flawed logic
-		// This assumes the game never ends
-		// Even if the game DOES end, it doesn't have a proper relationship to group rows
-		// Imagine a scenerio where someone DID complete a game.
-		// Now what?! It'll just keep putting the user back into that finished game!!!
-		// Currently I'm not sure how to setup the data
-		
-		//ParseQuery<ParseObject> query = query1.Or(query2);
 
 
 		var query = ParseObject.GetQuery(gameObjName);
@@ -76,16 +60,16 @@ public class TurnActions : MonoBehaviour {
 			{
 				// This does not require a network access.
 				var _matchCreationDate = _result.Get<int>("matchCreationDate");
-				//var _thismvperformeddate = _result.Get<int>("thisMovePerformedDate");
+				var _thismvperformeddate = _result.Get<int>("thisMovePerformedDate");
 				var _thisusrname = _result.Get<string>("thisPlayerUsername");
 				var _nextusrname = _result.Get<string>("nextPlayerUsername");
 				//var _thisplayernumber = _result.Get<int>("thisPlayerNumber");
-				//var _turnNumber = _result.Get<int>("thisTurnNumber");
+				var _turnNumber = _result.Get<int>("thisTurnNumber");
 				this.matchCreationDate = _matchCreationDate;
-				//this.thisMovePerformedDate = _thismvperformeddate;
+				this.thisMovePerformedDate = _thismvperformeddate;
 				this.thisUsernameFound = _thisusrname;
 				this.nextUsernameFound = _nextusrname;
-
+				this.thisTurnNumber = _turnNumber;
 				//this.thisTurnNumber = _turnNumber;
 				if(myUsername.Equals(this.thisUsernameFound) || myUsername.Equals(this.nextUsernameFound))
 				{
@@ -102,6 +86,7 @@ public class TurnActions : MonoBehaviour {
 			Debug.Log("this.thisUsernameFound => " + this.thisUsernameFound);
 			Debug.Log("this.nextUsernameFound => " + this.nextUsernameFound);
 		});
+		Debug.Log ("Step 2");
 		int durationTime = 0;
 		for (int i = 0; i < 30; i++) 
 		{
@@ -117,7 +102,7 @@ public class TurnActions : MonoBehaviour {
 		//Debug.Log ("DERP: " + playerGame.ObjectId.ToString ());
 		//this.gameObjID = playerGame.ObjectId.ToString();
 		//Debug.Log ("BERP: " + this.gameObjID);
-		
+		Debug.Log ("Step 3");
 		if (runQuery.IsFaulted || runQuery.IsCanceled)
 		{
 			Debug.Log("Error " + runQuery.Exception.Message);
@@ -126,26 +111,41 @@ public class TurnActions : MonoBehaviour {
 		}
 		else
 		{
+			Debug.Log ("Step 4");
 			Debug.Log("Query Sucessful.");
 			string otherPlayer = this.gameMatch.Get<string>("thisPlayerUsername");
 			int thisPlayerNumber = this.gameMatch.Get<int>("thisPlayerNumber");
-
-			Task performGameAsync=gameMatch.SaveAsync().ContinueWith(t =>
-			                                   {
+			Debug.Log ("Made it here>>");
+			string _boardState = Board.turnToSave;
+			Debug.Log ("Board going into Parse: " + _boardState);
+		
 				// Now let's update it with some new data.  In this case, only cheatMode
 				// and score will get sent to the cloud.  playerName hasn't changed.
-				gameMatch["thisPlayerNumber"] = myUsername;
-				gameMatch["thisPlayerUsername"] = myUsername;
-				gameMatch["thisPlayerNumber"] = (thisPlayerNumber==1)?2:1; // alternate between 1 and 2
-				gameMatch["thisPlayerNumber"] = myUsername;
-				gameMatch["inProgress"] = "InProgress";
-				gameMatch["thisBoardState"] = Board.getBoardStateToString();
-				gameMatch.Increment("thisTurnNumber");
-				gameMatch.SaveAsync();
-			});
+			this.gameMatch["thisPlayerUsername"] = myUsername;
+			this.gameMatch["thisPlayerNumber"] = (thisPlayerNumber==1)?2:1; // alternate between 1 and 2;
+			this.gameMatch["nextPlayerUsername"] = this.thisUsernameFound;
+			this.gameMatch["inProgress"] = "InProgress";
+			this.gameMatch["thisBoardState"] = _boardState;
+			this.gameMatch["thisTurnNumber"] = (this.thisTurnNumber+1);
+				//this.gameMatch.SaveAsync();
+			/*
+			var bigObject = new ParseObject(gameObjName);
+			//bigObject.ObjectId = this.gameMatch.ObjectId;
+			bigObject["thisPlayerUsername"] = myUsername;
+			bigObject["thisPlayerNumber"] = (thisPlayerNumber==1)?2:1; // alternate between 1 and 2;
+			bigObject["nextPlayerUsername"] = this.thisUsernameFound;
+			bigObject["inProgress"] = "InProgress";
+			bigObject["thisBoardState"] = _boardState;
+			bigObject["thisTurnNumber"] = (this.thisTurnNumber+1);
+		*/
+			//Task saveTask = bigObject.SaveAsync();
+			//Debug.LogWarning("Dirty?: " + this.gameMatch.IsDirty);
+			Debug.Log ("Step 5");
+			Task performGameAsync=this.gameMatch.SaveAsync();
 			durationTime = 0;
 			for (int i = 0; i < 30; i++) 
 			{
+				Debug.Log ("Tick:" + this.gameMatch.ObjectId);
 				if(performGameAsync.IsCompleted){break;}
 				else
 				{
@@ -153,12 +153,15 @@ public class TurnActions : MonoBehaviour {
 					yield return new WaitForSeconds (1);
 				}
 			}
-			Debug.Log ("Done! Waited " + durationTime + " second(s).");
+			Debug.Log ("Step 6");
+			Debug.Log ("<<Made it here (is complete? =>" + performGameAsync.IsCompleted + ")");
+			Debug.Log ("Done! Waited for Async save: " + durationTime + " second(s).");
+
+			//Board.gameMatch = this.gameMatch;
 
 
-
-
-			DisplayError ("Going to waiting screen...", false);
+			Debug.Log ("Going to waiting screen...");
+			Board.turnCounter = this.thisTurnNumber;
 			Application.LoadLevel ("scnWaiting");
 			yield break;
 			//Application.LoadLevel("ExampleScene");
@@ -174,7 +177,7 @@ public class TurnActions : MonoBehaviour {
 
 		TimeSpan t = (DateTime.UtcNow - new DateTime(1970, 1, 1));
 		int timestamp  = (int) t.TotalSeconds;
-		//Console.WriteLine (timestamp);
+		Debug.LogWarning ("Time is: " + timestamp);
 		
 		Debug.Log("Making Move...");
 		int gameBoardState = 999; // god this thing is a pain to declare as a 2d int array, screw it, object for now
@@ -249,6 +252,8 @@ public class TurnActions : MonoBehaviour {
 		{
 			_output = errorMsg;
 		}
+
+		Debug.Log (_output);
 		//lblErrorMsgCo.text = _output;
 	}
 }

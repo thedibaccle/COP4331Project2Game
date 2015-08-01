@@ -3,13 +3,12 @@ using System.Collections;
 
 public class Manager : MonoBehaviour {
 	public Board board;
-	string currPlayer;
+	bool didRotateCheck = false;
 
 	//Have selection thing here
 
 	void Start () {
 		TwoPlayerLocal ();
-		currPlayer = Board.WhoIsThis ();
 	}
 
 	void OnePlayer () {
@@ -24,25 +23,25 @@ public class Manager : MonoBehaviour {
 	}
 
 
-	private int currentTurnFromParse = 0;
 	private string boardState1dString = "";
 
 
-	void SetUp () {
+	void SetUp () 
+	{
 		GameObject boardObject;
-		//if (!Board.isInitialized) {
+		if (!Board.isInitialized) {
 			boardObject = new GameObject ("board");
-		board = boardObject.AddComponent<Board> ();
+			board = boardObject.AddComponent<Board> ();
 			
 			boardObject.transform.parent = transform;
-			//Board.isInitialized = true;
-		//} else {
+			Board.isInitialized = true;
+		} else {
 			//boardObject = Board;
-		//}
+		}
 		// TODO: Run parse coroutine
 
 		
-		Board.turnCounter = this.currentTurnFromParse;// from parse
+
 		//TODO:
 		// If thisPlayerNumber = this turn's player
 		// and if this turn's player == parse.username
@@ -53,7 +52,7 @@ public class Manager : MonoBehaviour {
 		Board.isPlayerWaiting = false; // DEBUG ONLY
 		// ^ !!!!!!!!!! DANGER
 
-		Board.setupCurrPlayer (1); // debug using 1 to indicate player 1
+		//Board.setupCurrPlayer (1); // debug using 1 to indicate player 1
 		//Board.currPlayer = "PlayerOne"; // from parse
 
 		// Let's store where the peices are now in that string
@@ -71,7 +70,7 @@ public class Manager : MonoBehaviour {
 				string _name = Board.pieceData[i].name;
 				
 				Board.gameBoardState[_row,_col] = Board.pieceData[i].name;
-				Debug.LogWarning("MANAGER PEICE DATA: " + _name + "@ " + _row + "x" + _col);
+				//Debug.LogWarning("MANAGER PEICE DATA: " + _name + "@ " + _row + "x" + _col);
 			}
 		}
 		// TODO: Setup where peices go!
@@ -86,9 +85,12 @@ public class Manager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (currPlayer != Board.WhoIsThis ()) {
-			this.gameObject.transform.Rotate(new Vector3(0, 0, 180));
-			currPlayer = Board.WhoIsThis();
+		if (Board.WhoIsThis () == "PlayerTwo" && !didRotateCheck) {
+			this.gameObject.transform.Rotate (new Vector3 (0, 0, 180));
+			didRotateCheck=true;
+		} else if(!didRotateCheck) {
+			this.gameObject.transform.Rotate (new Vector3 (0, 0, 0));
+			didRotateCheck=true;
 		}
 	
 	}
