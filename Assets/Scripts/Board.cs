@@ -177,16 +177,17 @@ public class Board : MonoBehaviour {
 
 	public static string WhoIsThis()
 	{
+
 		if (!isOnlineMode) {
 
 			return (turnCounter % 2 == 0) ? "PlayerOne" : "PlayerTwo";
 		} else
 		{
-			Debug.Log ("HERP: " + gameMatch["thisTurnNumber"]);
+
 			if(!Board.gameMatch.Equals(null) && !Board.gameMatch["thisTurnNumber"].Equals(null))
 			{
-				Debug.Log ("DERP: " + gameMatch["thisTurnNumber"]);
-				//turnCounter = (int);
+				//Debug.Log ("DERP: " + gameMatch["thisTurnNumber"]);
+				turnCounter = gameMatch.Get<int>("thisTurnNumber"); // this might not be necessary
 			}
 			else
 			{
@@ -201,9 +202,11 @@ public class Board : MonoBehaviour {
 			{
 				_currPlayer = "PlayerOne";
 			}
-
-			return Board._currPlayer;
+			Debug.LogWarning("Returning back: " + _currPlayer);
+			return _currPlayer;
 		}
+
+
 
 	}
 

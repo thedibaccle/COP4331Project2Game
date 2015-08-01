@@ -3,13 +3,12 @@ using System.Collections;
 
 public class Manager : MonoBehaviour {
 	public Board board;
-	string currPlayer;
+	bool didRotateCheck = false;
 
 	//Have selection thing here
 
 	void Start () {
 		TwoPlayerLocal ();
-		currPlayer = Board.WhoIsThis ();
 	}
 
 	void OnePlayer () {
@@ -86,9 +85,12 @@ public class Manager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (currPlayer != Board.WhoIsThis ()) {
-			this.gameObject.transform.Rotate(new Vector3(0, 0, 180));
-			currPlayer = Board.WhoIsThis();
+		if (Board.WhoIsThis () == "PlayerTwo" && !didRotateCheck) {
+			this.gameObject.transform.Rotate (new Vector3 (0, 0, 180));
+			didRotateCheck=true;
+		} else if(!didRotateCheck) {
+			this.gameObject.transform.Rotate (new Vector3 (0, 0, 0));
+			didRotateCheck=true;
 		}
 	
 	}
