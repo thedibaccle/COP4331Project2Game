@@ -26,6 +26,8 @@ public class AdjTile : MonoBehaviour
 		this.gameObject.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezePositionZ;
 		this.gameObject.GetComponent<Rigidbody> ().mass = 9999999;
 
+		//Image
+		//Object imgTile = Instantiate(GameObject.CreatePrimitive(
 
 	}
 	 
