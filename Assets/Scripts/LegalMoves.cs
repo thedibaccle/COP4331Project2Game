@@ -47,7 +47,7 @@ public class LegalMoves {
 				if (IsInBounds (row + i * 2, - col - j * 2)) {
 
 					//Debug.Log ("I'M IN MUTHAFUCKA");
-					adjSpace = Board.boardData [(row/2) + i, (-col / 2) - j];
+				adjSpace = Board.boardData [(-col / 2) - j,(row/2) + i];
 
 
 				Debug.LogWarning ("Is adjSpace null? => " + (adjSpace.Equals(null)) + " Was trying to load up Board.boardData["+((row/2)-1)+","+( (-col/2)-j )+"]");
