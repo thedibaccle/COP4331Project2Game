@@ -71,13 +71,18 @@ public class MatchingScript : MonoBehaviour {
 					var _thisusrname = _result.Get<string>("thisPlayerUsername");
 					var _nextusrname = _result.Get<string>("nextPlayerUsername");
 					var _inprog = _result.Get<string>("inProgress");
+
+
 					if(!finshedString.Equals(_inprog) && myUsername.Equals(_thisusrname))
 					{
+
+						Board.gameMatch = _result;
 						whichOptionFlag=1;
 						break;
 					}
 					else if(!finshedString.Equals(_inprog) && myUsername.Equals(_nextusrname))
 					{
+						Board.gameMatch = _result;
 						whichOptionFlag=2;
 						break;
 					}
@@ -111,7 +116,7 @@ public class MatchingScript : MonoBehaviour {
 			else
 			{
 				//this.gameObjID = playerGame.ObjectId.ToString();
-				
+
 				if(whichOptionFlag==1)
 				{
 					Debug.LogWarning("Moving 1");
@@ -184,6 +189,7 @@ public class MatchingScript : MonoBehaviour {
 					if(this.nextUsernameFound==null)
 					{
 						this.gameObjID = _result.ObjectId.ToString();
+						Board.gameMatch = _result;
 					}
 				} // the last item will be the one we actually care about. I really hate Parse right now, so much. Passionately.
 			});
@@ -229,7 +235,7 @@ public class MatchingScript : MonoBehaviour {
 				else if(!gameObjID.Equals("-1")){nextAction = 2;} // push player into match against other person waiting
 				else{nextAction=-1;}
 			}
-			Debug.Log ("Check 2: gameObjID => " + gameObjID);
+			Debug.Log ("Check 2{"+nextAction+"}: gameObjID => " + gameObjID);
 			DisplayError("Check 2 (5 secs)...",false);
 		}
 		DisplayError("Unable to find challenger. Creating new game...",false);
