@@ -81,7 +81,7 @@ public class Manager : MonoBehaviour {
 		}
 		//moves = legalMoves.getLegalMoves(currPlayer, boardData);
 		
-		Debug.LogWarning (Board.turnCounter + "}WHOSE TURN IS IT ANYWAYS?: " + Board.WhoIsThis());
+		Debug.LogWarning (Board.turnCounter + "sWHOSE TURN IS IT ANYWAYS?: " + Board.WhoIsThis());
 
 	}
 	void OnePlayer () {

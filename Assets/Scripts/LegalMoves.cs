@@ -50,7 +50,7 @@ public class LegalMoves {
 			if (IsInBounds (checkingX,checkingY))
 			 {
 
-				Debug.LogWarning("I'M IN MUTHAFUCKA");
+//				Debug.LogWarning("I'M IN MUTHAFUCKA");
 				adjSpace = Board.boardData [checkingX/2,checkingY/2];
 
 

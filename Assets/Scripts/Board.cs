@@ -123,10 +123,10 @@ public class Board : MonoBehaviour {
 	
 	
 	
-	
+	//TURNCOUNTER IS NOT WORKING CORRECTLY. CHANGE T EXPLICIT NUMBERS
 	public static string WhoIsThis()
 	{
-		
+		Debug.Log ("Turn counter number!!!!! " + turnCounter);	
 		if (!isOnlineMode) {
 			
 			return (turnCounter % 2 == 0) ? "PlayerOne" : "PlayerTwo";
@@ -135,7 +135,7 @@ public class Board : MonoBehaviour {
 			
 			if(!Board.gameMatch.Equals(null) && !Board.gameMatch["thisTurnNumber"].Equals(null))
 			{
-				//Debug.Log ("DERP: " + gameMatch["thisTurnNumber"]);
+				Debug.Log ("DERP: " + gameMatch["thisTurnNumber"]);
 				turnCounter = gameMatch.Get<int>("thisTurnNumber"); // this might not be necessary
 			}
 			else
@@ -205,6 +205,8 @@ public class Board : MonoBehaviour {
 
 					//if(LegalMoves.jumpList != null)
 					if(LegalMoves.jumpList.Contains(to)) {
+
+						//removeFromPeiceData(capturedPiece.GetComponent<Piece>().name);
 						//GameObject.Destroy(capturedPiece);
 						removeFromPeiceData(capturedPiece.GetComponent<Piece>().name);
 						capturedPiece.GetComponent<Piece> ().pos = new Vector3(7, -7, -100);
@@ -297,9 +299,10 @@ public class Board : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log ("THIS IS NOT AN AVAILABLE FUCKING MOVE");// YOU STUPID PIECE OF SHIT");
+			Debug.Log ("THIS IS NOT AN AVAILABLE MOVE");
 		}
-		
+
+		Debug.LogWarning ("THIS IS TO CHECK IF PLAYERMADE MOVE IS TRUE..... " + playerMadeMove);
 		if (playerMadeMove) 
 		{
 			isPlayerWaiting = true;
