@@ -69,7 +69,7 @@ public class TurnActions : MonoBehaviour {
 				//this.thisMovePerformedDate = _thismvperformeddate;
 				string thisUserNameFound = _thisusrname;
 				string nextUsernameFound = _nextusrname;
-				//this.thisTurnNumber = _turnNumber;
+				this.thisTurnNumber = _turnNumber;
 				//this.thisTurnNumber = _turnNumber;
 
 				if(myUsername.Equals(thisUserNameFound) || myUsername.Equals(nextUsernameFound))
