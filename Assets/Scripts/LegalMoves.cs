@@ -32,7 +32,7 @@ public class LegalMoves {
 		int row = (int)selectedPiece.GetComponent<Piece> ().pos.x;
 		int col = (int)selectedPiece.GetComponent<Piece> ().pos.y;
 
-		Debug.Log ("Getting possibleWarp of boardData[" + row/2 + "," + -col/2 + "]");
+		Debug.Log ("Getting possibleWarp of boardData[" + row/2 + "," + -(col/2) + "]");
 		possibleWarp = Board.boardData [row/2, -col/2];
 		Debug.Log ("Possible Warp that piece is on: " + possibleWarp);
 
@@ -43,18 +43,22 @@ public class LegalMoves {
 
 		for (int i = -1; i < 2; i++)
 			for (int j = -1; j < 2; j++) {
-				Debug.Log ("Checking if adjacent tile search is in bounds  " + (row + i*2) + " " + (col + j*2));
-				if (IsInBounds (row + i * 2, - col - j * 2)) {
+			Debug.Log ("Checking if adjacent tile search is in bounds  " + (row + i*2) + " " + (-1*(col + j*2)));
+			Debug.Log ("IsInBounds(" + (row + (i * 2)) + ", " + -1*(col + (j * 2)) + ")");
+			int checkingX = row + (i * 2);
+			int checkingY = (-1*(col + (j * 2)));
+			if (IsInBounds (checkingX,checkingY))
+			 {
 
-					//Debug.Log ("I'M IN MUTHAFUCKA");
-				adjSpace = Board.boardData [(-col / 2) - j,(row/2) + i];
+				Debug.LogWarning("I'M IN MUTHAFUCKA");
+				adjSpace = Board.boardData [checkingX/2,checkingY/2];
 
 
-				Debug.LogWarning ("Is adjSpace null? => " + (adjSpace.Equals(null)) + " Was trying to load up Board.boardData["+((row/2)-1)+","+( (-col/2)-j )+"]");
+				//Debug.LogWarning ("Is adjSpace null? => " + (adjSpace.Equals(null)) + " Was trying to load up Board.boardData["+((row/2)-1)+","+( (-col/2)-j )+"]");
 
 
 				//Debug.Log ("boardData pos: " + (row /2 + i) + " " + ( -col / 2 - j));
-				Debug.Log ("a pos: " + (row + i*2) + " " + (col + j*2));
+				Debug.Log ("a pos: " + checkingX + " " + checkingY);
 				if(adjSpace.tag == "Tile")
 					Debug.Log ("Now that we know the position, is it colliding with anything? " + adjSpace.GetComponent<AdjTile> ().collidingWith);
 				if(adjSpace.tag == "Warp")

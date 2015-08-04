@@ -148,6 +148,7 @@ public class WaitingForPlayer : MonoBehaviour {
 			{
 				myTurn = true;
 				Board.gameMatch = this.gameMatch;
+				//Board.InitalizationOfBoard ();
 				Debug.LogWarning ("Moving to game now YAY!!!");
 				Application.LoadLevel("scnGame");
 			}
