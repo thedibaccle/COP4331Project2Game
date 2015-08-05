@@ -335,11 +335,11 @@ public class Board : MonoBehaviour {
 					string _name = pieceData[i].name;
 					
 					gameBoardState[_row,_col] = pieceData[i].name;
-					Debug.LogWarning("PIECE DATA: " + _name + "@ " + _row + "x" + _col);
+					//Debug.Log("PIECE DATA: " + _name + "@ " + _row + "x" + _col);
 				}
 			}
 			
-			Debug.Log(getBoardStateToString()); // combines the 2d string array into a single array
+			Debug.Log("About to send this to TurnActions: " + getBoardStateToString()); // combines the 2d string array into a single array
 			turnToSave=getBoardStateToString();
 			makeTurn();
 			//var turnActionsScript = new TurnActions();
@@ -377,6 +377,7 @@ public class Board : MonoBehaviour {
 				for (int j = 0; j < 8; j++) 
 				{
 					returnString += gameBoardState[i,j] + ",";
+					Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
 				}
 			}
 			else
@@ -384,6 +385,7 @@ public class Board : MonoBehaviour {
 				for (int j = 0; j < 7; j++) 
 				{
 					returnString += gameBoardState[i,j] + ",";
+					Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
 				}
 				returnString += gameBoardState[i,7]; // don't want the last item to have a comma
 			}

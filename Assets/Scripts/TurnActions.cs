@@ -69,7 +69,7 @@ public class TurnActions : MonoBehaviour {
 				//this.thisMovePerformedDate = _thismvperformeddate;
 				string thisUserNameFound = _thisusrname;
 				string nextUsernameFound = _nextusrname;
-				this.thisTurnNumber = _turnNumber;
+				//this.thisTurnNumber = _turnNumber;
 				//this.thisTurnNumber = _turnNumber;
 
 				if(myUsername.Equals(thisUserNameFound) || myUsername.Equals(nextUsernameFound))
@@ -130,7 +130,8 @@ public class TurnActions : MonoBehaviour {
 			this.gameMatch["nextPlayerUsername"] = otherPlayer;
 			this.gameMatch["inProgress"] = "InProgress";
 			this.gameMatch["thisBoardState"] = _boardState;
-			this.gameMatch["thisTurnNumber"] = (this.thisTurnNumber+1);
+			this.gameMatch.Increment("thisTurnNumber");
+			//this.gameMatch["thisTurnNumber"] = (this.thisTurnNumber+1);
 				//this.gameMatch.SaveAsync();
 			/*
 			var bigObject = new ParseObject(gameObjName);
