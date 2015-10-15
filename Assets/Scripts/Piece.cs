@@ -33,16 +33,8 @@ public class Piece: MonoBehaviour {
 		piece = this.gameObject;
 		this.gameObject.AddComponent<Rigidbody> ();
 		this.gameObject.GetComponent<Rigidbody> ().useGravity = false;
-
-
-		//piece.GetComponent<Rigidbody> ().AddExplosionForce (500, pos, 2);
-
 		Board.pieceData [pieceCounter] = this.gameObject;
 		pieceCounter++;
-
-		if (!Board.dicboardData.ContainsKey (pos)) {
-			Board.dicboardData.Add (pos, this.gameObject);
-		}
 		Board.gameBoardState[(int)row, (int)col] = this.name;
 		//Board.peicePlacement += this.name + "@" + (-this.pos.y/2) + "x" + this.pos.x/2;
 		//Board.boardData [(int)row, (int)col] = this.gameObject;

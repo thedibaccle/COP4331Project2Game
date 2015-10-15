@@ -18,9 +18,6 @@ public class AdjTile : MonoBehaviour
 		row = pos.x / 2;
 		col = -pos.y / 2;
 		//objTile = this.gameObject;
-		if(!Board.dicboardData.ContainsKey(pos)){
-		Board.dicboardData.Add (pos, this.gameObject);
-		}
 		Board.boardData [(int)row, (int)col] = this.gameObject;
 		//Board.cacheBoardData [(int)row, (int)col] = this.gameObject;
 		if (this.gameObject.GetComponent<Rigidbody>() == null) {

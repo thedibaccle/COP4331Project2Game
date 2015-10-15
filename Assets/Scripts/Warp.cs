@@ -8,12 +8,8 @@ public class Warp : MonoBehaviour {
 	 * After end of turn, checks if it is currently colliding with a player piece, return boolean
 	 * If piece selected is on warp, have small animation. Double tap to confirm warp
 	 */
-	// Use this for initialization
-	//public Dictionary<Vector2, AdjTile> tiles = new Dictionary<Vector2, AdjTile>();
 	public Vector3 pos;
 	public float row, col;
-	//Piece piece;
-	//public static GameObject warp;
 	public GameObject linkedWarp;
 	public GameObject collidingWith = null;
 
@@ -27,9 +23,6 @@ public class Warp : MonoBehaviour {
 		col = -pos.y / 2;
 		//warp = this.gameObject;
 
-		if(!Board.dicboardData.ContainsKey(pos)){
-			Board.dicboardData.Add (pos, this.gameObject);
-		}
 		Board.boardData [(int)row, (int)col] = this.gameObject;
 		//Board.cacheBoardData [(int)row, (int)col] = this.gameObject;
 		if (this.gameObject.GetComponent<Rigidbody>() == null) {

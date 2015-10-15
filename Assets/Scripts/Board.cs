@@ -9,7 +9,7 @@ using System.Collections.Generic; // need this STUPID THING so IENumerable works
 //using UnityEngine.EventSystems.IPointerClickHandler;
 
 public class Board : MonoBehaviour {
-	public static bool isOnlineMode = true; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
+	public static bool isOnlineMode = false; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
 	public static ParseObject gameMatch;
 	
 	public static bool isInitialized = false; // used to check if Board was ever loaded once before
@@ -34,7 +34,7 @@ public class Board : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-
+		
 	}
 	/*
 	public static void InitalizationOfBoard()
@@ -197,25 +197,25 @@ public class Board : MonoBehaviour {
 			if(capturedPiece != null)
 			{
 				/// Let's remove captured peices from our pieceData array
-
-
+				
+				
 				Debug.Log ("captured piece: " + capturedPiece.GetComponent<Piece> ().pos);
 				Debug.Log ("currPlayer " + WhoIsThis() + " capturedPiece " + capturedPiece.tag);
 				if(WhoIsThis() != capturedPiece.tag ) {
-
+					
 					//if(LegalMoves.jumpList != null)
 					if(LegalMoves.jumpList.Contains(to)) {
-
+						
 						//removeFromPeiceData(capturedPiece.GetComponent<Piece>().name);
 						//GameObject.Destroy(capturedPiece);
 						removeFromPeiceData(capturedPiece.GetComponent<Piece>().name);
 						capturedPiece.GetComponent<Piece> ().pos = new Vector3(7, -7, -100);
 						capturedPiece.GetComponent<Piece> ().transform.position = capturedPiece.GetComponent<Piece> ().pos;
-
-
-
-
-
+						
+						
+						
+						
+						
 						
 						Debug.Log ("Destroyed " + capturedPiece.tag + " at pos: " + capturedPiece.GetComponent<Piece> ().pos);
 					}
@@ -301,7 +301,7 @@ public class Board : MonoBehaviour {
 		{
 			Debug.Log ("THIS IS NOT AN AVAILABLE MOVE");
 		}
-
+		
 		Debug.LogWarning ("THIS IS TO CHECK IF PLAYERMADE MOVE IS TRUE..... " + playerMadeMove);
 		if (playerMadeMove) 
 		{
@@ -315,11 +315,11 @@ public class Board : MonoBehaviour {
 			
 			// Reset our boardState 2d string to null
 			gameBoardState = getNullBoard();
-
-
-
-
-
+			
+			
+			
+			
+			
 			// Let's store where the peices are now in that string
 			for (int i = 0; i < 16; i++)
 			{
@@ -362,7 +362,7 @@ public class Board : MonoBehaviour {
 				}
 			}
 		}
-
+		
 	}
 	public static string getBoardStateToString()
 	{
@@ -396,9 +396,9 @@ public class Board : MonoBehaviour {
 	
 	public static void convertToGameBoard(string boardStateString)
 	{
-
-
-
+		
+		
+		
 		//boardStateString = "p2_0,p2_1,p2_2,p2_3,p2_4,p2_5,p2_6,p2_7,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,blank,p1_0,p1_1,p1_2,p1_3,p1_4,p1_5,p1_6,p1_7";
 		//Debug.LogWarning (boardStateString);
 		string[] _boardPieces = boardStateString.Split(',');
@@ -409,12 +409,12 @@ public class Board : MonoBehaviour {
 		int j = 7;
 		int pieceCounter = 0;
 		GameObject _tempGameObject;
-
+		
 		// This is kinda... 2am sorta code.
 		// But I need to "remove" player pieces (aka move them out of the way)
 		string[] _allKnownPlayerPieces = {"p2_0","p2_1","p2_2","p2_3","p2_4","p2_5","p2_6","p2_7","p1_0","p1_1","p1_2","p1_3","p1_4","p1_5","p1_6","p1_7"};
-
-
+		
+		
 		foreach (string _knownPiece in _allKnownPlayerPieces)
 		{
 			// look to see if the known player piece came from parse
@@ -428,7 +428,7 @@ public class Board : MonoBehaviour {
 					_foundMatch=true;
 				}
 			}
-
+			
 			if(!_foundMatch)
 			{
 				_tempGameObject = GameObject.Find(_knownPiece);
@@ -436,16 +436,16 @@ public class Board : MonoBehaviour {
 				_tempGameObject.GetComponent<Piece> ().transform.position = _tempGameObject.GetComponent<Piece> ().pos;
 			}
 		}
-
-	
-
+		
+		
+		
 		_tempGameObject = null;
-	
-
+		
+		
 		
 		foreach (string _piece in _boardPieces)
 		{
-
+			
 			i++;
 			if(i>7)
 			{
@@ -494,11 +494,11 @@ public class Board : MonoBehaviour {
 				///////////////////////////////////////////////////////////////////////////////
 				Debug.LogWarning("Was at: " + (int) positionInGame.x + ", " + (int)positionInGame.y);
 				//Debug.LogWarning("Was at: " + (int) pieceData[i,j].pos.x + ", " + (int)positionInGame.y);
-
+				
 				// was: 6,-14
 				// needs to be: 6,-4
 				// is    : -6, -4
-
+				
 				// i = x, j = y
 				positionInGame = new Vector3(i*2,-1*(j*2), positionInGame.z);
 				
