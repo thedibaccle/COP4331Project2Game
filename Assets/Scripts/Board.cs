@@ -25,7 +25,10 @@ public class Board : MonoBehaviour {
 	public static string[,] gameBoardState = getNullBoard ();
 	public static bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
 	public static string turnToSave;
-	// William:
+
+	public static ArrayList<GameObject> bPlayer = new ArrayList<GameObject>();
+	public static ArrayList<GameObject> rPlayer = new ArrayList<GameObject>();
+		// William:
 	// Tried to get a ToString() of the object's name from peiceData but the name was CONSTANTLY returning a null reference.
 	// So the positions of the peices are being stored in this string instead so that parse can set/get this
 	public static string peicePlacement = "";

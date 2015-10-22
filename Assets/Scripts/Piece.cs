@@ -23,7 +23,7 @@ public class Piece: MonoBehaviour {
 	public static int pieceCounter;
 	// Use this for initialization
 	void Start () {
-		pieceCounter = 0; // reset this everytime
+		pieceCounter = 0; // reset this every time
 		pos = transform.position;
 		pos.y = (float)((int)pos.y);
 		getPositionInBoardData ();
@@ -31,10 +31,16 @@ public class Piece: MonoBehaviour {
 		//selectedPiece = transform.position;
 		getName (name);
 		piece = this.gameObject;
-		this.gameObject.AddComponent<Rigidbody> ();
-		this.gameObject.GetComponent<Rigidbody> ().useGravity = false;
+		piece.AddComponent<Rigidbody> ();
+		piece.GetComponent<Rigidbody> ().useGravity = false;
 		Board.pieceData [pieceCounter] = this.gameObject;
 		pieceCounter++;
+
+		if (piece.tag == "PlayerOne")
+			Board.bPlayer.add (piece);
+		else
+			Board.rPlayer.add (piece);
+
 		Board.gameBoardState[(int)row, (int)col] = this.name;
 		//Board.peicePlacement += this.name + "@" + (-this.pos.y/2) + "x" + this.pos.x/2;
 		//Board.boardData [(int)row, (int)col] = this.gameObject;
@@ -94,18 +100,6 @@ public class Piece: MonoBehaviour {
 		row = -pos.y/2;
 		col = pos.x/2;
 		
-	}
-
-	void OnCollisionEnter (Collision c) {
-		//Debug.Log ("Colliding with: " + c.collider.gameObject.name);
-		//if (c.gameObject.name == "Tile") {
-		//	Debug.Log ("Piece hitting tile");
-			//c.gameObject.GetComponent<AdjTile> ().collidingWith = this.gameObject;
-			//Destroy (c.gameObject);
-
-	}
-
-	void OnCollisionExit (Collision c) {
 	}
 
 	public void anCurrPlayerBob () {
