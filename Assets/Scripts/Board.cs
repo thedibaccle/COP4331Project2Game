@@ -6,10 +6,11 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic; // need this STUPID THING so IENumerable works within result outputs. Makes no damn sense since cothreads are IENumerable FFS!
 
-//using UnityEngine.EventSystems.IPointerClickHandler;
+//using UnityEngine.EventSystems.IPointerClickHandler;}
 
 public class Board : MonoBehaviour {
 	public static bool isOnlineMode = false; // MODIFY THIS TO TEST ONLINE OR OFFLINE SINGLE PLAYER MODE
+	public static bool isAI = true;
 	public static ParseObject gameMatch;
 	
 	public static bool isInitialized = false; // used to check if Board was ever loaded once before
@@ -25,10 +26,8 @@ public class Board : MonoBehaviour {
 	public static string[,] gameBoardState = getNullBoard ();
 	public static bool isPlayerWaiting = true; // enforce this as locked until parse says otherwise.
 	public static string turnToSave;
-
-	public static ArrayList<GameObject> bPlayer = new ArrayList<GameObject>();
-	public static ArrayList<GameObject> rPlayer = new ArrayList<GameObject>();
-		// William:
+	public static Stack<GameObject> bPlayer = new Stack<GameObject>();
+	public static Stack<GameObject> rPlayer = new Stack<GameObject>();
 	// Tried to get a ToString() of the object's name from peiceData but the name was CONSTANTLY returning a null reference.
 	// So the positions of the peices are being stored in this string instead so that parse can set/get this
 	public static string peicePlacement = "";
@@ -37,7 +36,7 @@ public class Board : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		
+
 	}
 	/*
 	public static void InitalizationOfBoard()
@@ -168,14 +167,16 @@ public class Board : MonoBehaviour {
 	{
 		
 	}
-	
+
 	
 	public static void Move (GameObject from, Vector3 to) 
 	{
+
 		if (isPlayerWaiting) {
 			Debug.Log ("Sorry, it's not your turn!!!!");
 			return; // do nothing
 		}
+
 		//while (from.GetComponent<Piece> ().pos != to)
 		//Debug.Log ("MOVE DBUG: " + from.GetComponent<Piece> ().pos);
 		//boardData.Remove (from.GetComponent<Piece> ().pos);
@@ -308,9 +309,8 @@ public class Board : MonoBehaviour {
 		Debug.LogWarning ("THIS IS TO CHECK IF PLAYERMADE MOVE IS TRUE..... " + playerMadeMove);
 		if (playerMadeMove) 
 		{
-			isPlayerWaiting = true;
-			turnCounter++; // this alone can track the player turns in offline mode since it's being mod returned on method call of WhoIsThis()
-			playerMadeMove = false;
+
+
 			//var turnActionsScript = new TurnActions();
 			//turnActionsScript.makeTurn();
 			//Debug.LogWarning(dicboardData.ToString());
@@ -345,6 +345,17 @@ public class Board : MonoBehaviour {
 			Debug.Log("About to send this to TurnActions: " + getBoardStateToString()); // combines the 2d string array into a single array
 			turnToSave=getBoardStateToString();
 			makeTurn();
+			if(isAI)
+			{
+				AI.timeToThink(boardData, bPlayer, rPlayer, true, 1);
+				turnCounter++;
+				playerMadeMove = false;
+			}
+			else {
+			isPlayerWaiting = true;
+			turnCounter++; // this alone can track the player turns in offline mode since it's being mod returned on method call of WhoIsThis()
+			playerMadeMove = false;
+			}
 			//var turnActionsScript = new TurnActions();
 			//turnActionsScript.makeTurn ();
 		}
@@ -380,7 +391,7 @@ public class Board : MonoBehaviour {
 				for (int j = 0; j < 8; j++) 
 				{
 					returnString += gameBoardState[i,j] + ",";
-					Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
+					//Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
 				}
 			}
 			else
@@ -388,7 +399,7 @@ public class Board : MonoBehaviour {
 				for (int j = 0; j < 7; j++) 
 				{
 					returnString += gameBoardState[i,j] + ",";
-					Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
+					//Debug.Log("gameBoardState["+i+","+j+"]=>" + gameBoardState[i,j]);
 				}
 				returnString += gameBoardState[i,7]; // don't want the last item to have a comma
 			}

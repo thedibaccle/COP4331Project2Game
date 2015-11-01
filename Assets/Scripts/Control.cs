@@ -71,7 +71,7 @@ public class Control : MonoBehaviour {
 		 *otherwise, continue
 		 */
 	
-
+		return 0;
 	}
 
 	public void positionsInThisArea(Vector3 from, Vector3 to){

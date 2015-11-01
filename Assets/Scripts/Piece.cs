@@ -37,9 +37,9 @@ public class Piece: MonoBehaviour {
 		pieceCounter++;
 
 		if (piece.tag == "PlayerOne")
-			Board.bPlayer.add (piece);
+			Board.bPlayer.Push (piece);
 		else
-			Board.rPlayer.add (piece);
+			Board.rPlayer.Push (piece);
 
 		Board.gameBoardState[(int)row, (int)col] = this.name;
 		//Board.peicePlacement += this.name + "@" + (-this.pos.y/2) + "x" + this.pos.x/2;
